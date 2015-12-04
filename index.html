@@ -14,7 +14,7 @@
             $.each(articles, function(index, elem) {
                 var div = $('<div/>', {'class': 'article'})
                 var link = $('<a/>', {
-                    'href': elem.relativeURL
+                    'href': 'http://ohlasy.info' + elem.relativeURL
                 })
                 link.append($('<h2/>').html(elem.title))
                 div.append(link)
