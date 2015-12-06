@@ -22,7 +22,7 @@
                 mountNode.append(div)
             })
         }
-        $.getJSON('http://ohlasy.info/archiv/index.js', function(data) {
+        $.getJSON('http://ohlasy.info/api/articles.js', function(data) {
             var controls = document.getElementById('controls')
             var reload = function(items) { renderArticles(items) }
             var filters = {}
