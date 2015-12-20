@@ -8,6 +8,7 @@
     <link href="style.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="archiv.js"></script>
+    <script src="views.js"></script>
 </head>
 <body>
     <header class="navbar navbar-default">
@@ -18,25 +19,12 @@
 
     <div class="container">
         <div id="controls"></div>
-        <hr>
         <script>
-        function renderArticles(articles) {
-            var mountNode = $('.results')
-            mountNode.empty()
-            $.each(articles, function(index, elem) {
-                var div = $('<div/>', {'class': 'article'})
-                var link = $('<a/>', {
-                    'href': 'http://ohlasy.info' + elem.relativeURL
-                })
-                link.append($('<h2/>').html(elem.title))
-                div.append(link)
-                div.append($('<p/>').html(elem.perex))
-                mountNode.append(div)
-            })
-        }
         $.getJSON('http://ohlasy.info/api/articles.js', function(data) {
             var controls = document.getElementById('controls')
-            var reload = function(items) { renderArticles(items) }
+            var reload = function(items) {
+                $('#results').empty().append(renderSearchResults(items))
+            }
             var filters = {}
             // Authors
             var authors = collectPropertyValues(data, 'author')
@@ -57,7 +45,7 @@
             reload(data)
         })
         </script>
-        <div class="results"></div>
+        <div id="results"></div>
     </div>
     <footer class="text-muted">
         <div class="container">

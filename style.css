@@ -1,3 +1,11 @@
 select {
     margin-right: 1ex;
 }
+
+#controls {
+    margin-bottom: 20px;
+}
+
+#results {
+    min-height: 500px;
+}
