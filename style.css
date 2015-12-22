@@ -9,3 +9,11 @@ select {
 #results {
     min-height: 500px;
 }
+
+.article-preview {
+    margin-bottom: 0;
+}
+
+.article-preview h2 {
+    color: rgb(148, 82, 0);
+}
