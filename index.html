@@ -7,8 +7,7 @@
     <link href="http://ohlasy.info/style/shared.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="archiv.js"></script>
-    <script src="views.js"></script>
+    <script src="bundle.js"></script>
 </head>
 <body>
     <header class="navbar navbar-default">
@@ -18,35 +17,9 @@
     </header>
 
     <div class="container">
-        <div id="controls"></div>
-        <script>
-        $.getJSON('http://ohlasy.info/api/articles.js', function(data) {
-            var controls = document.getElementById('controls')
-            var reload = function(items) {
-                $('#results').empty().append(renderSearchResults(items))
-            }
-            var filters = {}
-            // Authors
-            var authors = collectPropertyValues(data, 'author')
-            var authorFilterBox = buildComboBox(authors, 'Autor')
-            authorFilterBox.onchange = buildPropertyFilter('author', filters, data, reload)
-            controls.appendChild(authorFilterBox)
-            // Categories
-            var categories = collectPropertyValues(data, 'category')
-            var categoryFilterBox = buildComboBox(categories, 'Rubrika')
-            categoryFilterBox.onchange = buildPropertyFilter('category', filters, data, reload)
-            controls.appendChild(categoryFilterBox)
-            // Serials
-            var serials = collectPropertyValues(data, 'serial')
-            var serialFilterBox = buildComboBox(serials, 'Seriál')
-            serialFilterBox.onchange = buildPropertyFilter('serial', filters, data, reload)
-            controls.appendChild(serialFilterBox)
-            // Render
-            reload(data)
-        })
-        </script>
-        <div id="results"></div>
+        <div id="archive"></div>
     </div>
+
     <footer class="text-muted">
         <div class="container">
             <div class="row">

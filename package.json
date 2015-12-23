@@ -1,0 +1,31 @@
+{
+  "name": "ohlasy-archive",
+  "version": "1.0.0",
+  "description": "An archive of a regional newspaper",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3"
+  },
+  "devDependencies": {
+    "buster": "^0.7.18"
+  },
+  "scripts": {
+    "test": "buster-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ohlasy/archiv.git"
+  },
+  "author": "Tomáš Znamenáček <tomas.znamenacek@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ohlasy/archiv/issues"
+  },
+  "homepage": "https://github.com/Ohlasy/archiv"
+}
