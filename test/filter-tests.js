@@ -1,5 +1,5 @@
 var buster = require("buster")
-var ohlasy = require("../lib/Ohlasy.js")
+var ohlasy = require("../src/ohlasy.js")
 
 var assert = buster.referee.assert
 var refute = buster.referee.refute

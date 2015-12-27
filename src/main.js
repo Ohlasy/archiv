@@ -1,7 +1,7 @@
 var React = require('react')
 var ReactDOM = require('react-dom')
-var ohlasy = require("./lib/ohlasy.js")
-var views = require("./lib/views.js")
+var ohlasy = require("./ohlasy.js")
+var views = require("./views.js")
 
 $.getJSON('http://ohlasy.info/api/articles.js', function(articles) {
     var archive = new ohlasy.Archive(articles)
