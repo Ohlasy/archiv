@@ -19001,12 +19001,13 @@ var ArticleView = React.createClass({
 
     render: function () {
         var article = this.props.article;
+        var fullURL = "http://ohlasy.info" + article.relativeURL;
         return React.createElement(
             "div",
             { className: "article-preview" },
             React.createElement(
                 "a",
-                { href: article.relativeURL },
+                { href: fullURL },
                 React.createElement(
                     "h2",
                     null,

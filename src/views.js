@@ -17,9 +17,10 @@ var DateView = React.createClass({
 var ArticleView = React.createClass({
     render: function() {
         var article = this.props.article
+        var fullURL = "http://ohlasy.info" + article.relativeURL
         return (
             <div className="article-preview">
-            <a href={article.relativeURL}>
+            <a href={fullURL}>
                 <h2>{article.title}</h2>
                 <p className="article-perex">{article.perex}</p>
                 <p className="text-muted article-meta">{article.author} / 
