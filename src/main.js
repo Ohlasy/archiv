@@ -14,4 +14,6 @@ $.getJSON('http://ohlasy.info/api/articles.js', function(articles) {
         <views.ArchiveView archive={archive} />,
         document.getElementById('archive')
     );
+}).fail(function() {
+    $('#progress').html('Při načítání seznamu článků došlo k chybě. Obětujte kohouta a zkuste to znovu, případně později.')
 })

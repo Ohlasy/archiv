@@ -18933,6 +18933,8 @@ $.getJSON('http://ohlasy.info/api/articles.js', function (articles) {
     var archive = new ohlasy.Archive(articles);
     archive.filters = [archive.filterForField("author", "Autor"), archive.filterForField("category", "Rubrika"), archive.filterForField("serial", "Seriál")];
     ReactDOM.render(React.createElement(views.ArchiveView, { archive: archive }), document.getElementById('archive'));
+}).fail(function () {
+    $('#progress').html('Při načítání seznamu článků došlo k chybě. Obětujte kohouta a zkuste to znovu, případně později.');
 });
 
 },{"./ohlasy.js":159,"./views.js":160,"react":157,"react-dom":28}],159:[function(require,module,exports){
