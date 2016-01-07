@@ -1,3 +1,7 @@
+#archive {
+    min-height: 500px;
+}
+
 .article-preview {
     margin-bottom: 0;
 }
