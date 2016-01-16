@@ -19049,7 +19049,7 @@ var ArticleView = React.createClass({
 var FilterView = React.createClass({
     displayName: "FilterView",
 
-    noFilterPlaceholder: "nehraje roli",
+    noFilterPlaceholder: "bez omezení",
     didChangeSelection: function (sender) {
         var selectedValue = sender.target.value;
         var filterValue = selectedValue == this.noFilterPlaceholder ? null : selectedValue;
