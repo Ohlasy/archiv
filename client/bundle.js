@@ -19003,29 +19003,43 @@ var ArticleView = React.createClass({
 
     render: function () {
         var article = this.props.article;
+        var photoURL = article['cover-photo'];
         var fullURL = "http://ohlasy.info" + article.relativeURL;
         return React.createElement(
             "div",
-            { className: "article-preview" },
+            { className: "row" },
             React.createElement(
-                "a",
-                { href: fullURL },
+                "div",
+                { className: "col-md-4" },
                 React.createElement(
-                    "h2",
-                    null,
-                    article.title
-                ),
+                    "div",
+                    { className: "force-hd-aspect" },
+                    React.createElement("img", { src: photoURL, alt: "", className: "img-responsive cover-photo" })
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "col-md-8 article-preview" },
                 React.createElement(
-                    "p",
-                    { className: "article-perex" },
-                    article.perex
-                ),
-                React.createElement(
-                    "p",
-                    { className: "text-muted article-meta" },
-                    article.author,
-                    " / ",
-                    React.createElement(DateView, { dateString: article.pubDate })
+                    "a",
+                    { href: fullURL },
+                    React.createElement(
+                        "h2",
+                        null,
+                        article.title
+                    ),
+                    React.createElement(
+                        "p",
+                        { className: "article-perex" },
+                        article.perex
+                    ),
+                    React.createElement(
+                        "p",
+                        { className: "text-muted article-meta" },
+                        article.author,
+                        " / ",
+                        React.createElement(DateView, { dateString: article.pubDate })
+                    )
                 )
             )
         );
@@ -19089,18 +19103,30 @@ var ArchiveView = React.createClass({
             { className: "archive" },
             React.createElement(
                 "div",
-                { className: "controls" },
-                filters.map(function (f, i) {
-                    return React.createElement(FilterView, { filter: f, key: i,
-                        updateHandler: this.updateHandler });
-                }, this)
+                { className: "navbar navbar-default toolbar" },
+                React.createElement(
+                    "div",
+                    { className: "container" },
+                    React.createElement(
+                        "div",
+                        { className: "controls" },
+                        filters.map(function (f, i) {
+                            return React.createElement(FilterView, { filter: f, key: i,
+                                updateHandler: this.updateHandler });
+                        }, this)
+                    )
+                )
             ),
             React.createElement(
                 "div",
-                { className: "article-results" },
-                articles.map(function (article, i) {
-                    return React.createElement(ArticleView, { article: article, key: i });
-                })
+                { className: "container" },
+                React.createElement(
+                    "div",
+                    { className: "article-results" },
+                    articles.map(function (article, i) {
+                        return React.createElement(ArticleView, { article: article, key: i });
+                    })
+                )
             )
         );
     }

@@ -17,15 +17,23 @@ var DateView = React.createClass({
 var ArticleView = React.createClass({
     render: function() {
         var article = this.props.article
+        var photoURL = article['cover-photo']
         var fullURL = "http://ohlasy.info" + article.relativeURL
         return (
-            <div className="article-preview">
-            <a href={fullURL}>
-                <h2>{article.title}</h2>
-                <p className="article-perex">{article.perex}</p>
-                <p className="text-muted article-meta">{article.author} / 
-                    <DateView dateString={article.pubDate}/></p>
-            </a>
+            <div className="row">
+                <div className="col-md-4">
+                    <div className="force-hd-aspect">
+                        <img src={photoURL} alt="" className="img-responsive cover-photo"/>
+                    </div>
+                </div>
+                <div className="col-md-8 article-preview">
+                    <a href={fullURL}>
+                        <h2>{article.title}</h2>
+                        <p className="article-perex">{article.perex}</p>
+                        <p className="text-muted article-meta">{article.author} / 
+                            <DateView dateString={article.pubDate}/></p>
+                    </a>
+                </div>
             </div>
         )
     }
@@ -67,17 +75,23 @@ var ArchiveView = React.createClass({
         var filters = this.props.archive.filters
         return (
             <div className="archive">
-                <div className="controls">{
-                filters.map(function(f, i) {
-                    return <FilterView filter={f} key={i}
-                        updateHandler={this.updateHandler}/>
-                }, this)
-                }</div>
-                <div className="article-results">{
-                articles.map(function(article, i) {
-                    return <ArticleView article={article} key={i}/>
-                })
-                }</div>
+                <div className="navbar navbar-default toolbar">
+                    <div className="container">
+                        <div className="controls">{
+                        filters.map(function(f, i) {
+                            return <FilterView filter={f} key={i}
+                                updateHandler={this.updateHandler}/>
+                        }, this)
+                        }</div>
+                    </div>
+                </div>
+                <div className="container">
+                    <div className="article-results">{
+                    articles.map(function(article, i) {
+                        return <ArticleView article={article} key={i}/>
+                    })
+                    }</div>
+                </div>
             </div>
         )
     }
