@@ -1,4 +1,5 @@
 var React = require('react')
+var LazyLoad = require('react-lazy-load').default
 
 var DateView = React.createClass({
     render: function() {
@@ -22,9 +23,11 @@ var ArticleView = React.createClass({
         return (
             <div className="row">
                 <div className="col-md-4">
-                    <div className="force-hd-aspect">
-                        <img src={photoURL} alt="" className="img-responsive cover-photo"/>
-                    </div>
+                    <LazyLoad>
+                        <div className="force-hd-aspect">
+                            <img src={photoURL} alt="" className="img-responsive cover-photo"/>
+                        </div>
+                    </LazyLoad>
                 </div>
                 <div className="col-md-8 article-preview">
                     <a href={fullURL}>
