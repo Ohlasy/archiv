@@ -46,6 +46,7 @@ var FilterView = React.createClass({
         var filterValue = (selectedValue == this.noFilterPlaceholder) ? null : selectedValue
         this.props.filter.currentValue = filterValue
         this.props.updateHandler()
+        ga('send', 'event', 'filter', this.props.filter.propertyName, selectedValue);
     },
     render: function() {
         var filter = this.props.filter
