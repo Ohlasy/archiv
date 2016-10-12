@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ohlasy | Archiv</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href="http://ohlasy.info/style/shared.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="client/bundle.js"></script>
+    <script src="client/analytics.js"></script>
+    <link rel="icon" type="image/png" href="http://archiv.ohlasy.info/img/favicon.png">
+    <meta property="og:title" content="Ohlasy: Archiv článků">
+    <meta property="og:site_name" content="Ohlasy">
+    <meta property="og:description" content="Archiv všech doposud vydaných článků. Filtrujte podle autora, rubriky nebo seriálu.">
+    <meta property="og:image" content="http://i.imgur.com/Q5JBUCM.jpg">
+</head>
+<body>
+    <header class="navbar navbar-default">
+    <div class="container">
+        <h1><a href="http://ohlasy.info/">Ohlasy <small>archiv článků</small></a></h1>
+    </div>
+    </header>
+
+    <div id="archive">
+        <div class="container">
+            <script>
+                document.write("<p id='progress'>Načítám seznam článků…</p>")
+            </script>
+            <noscript>
+                <p>Váš prohlížeč nepodporuje JavaScript nebo ho má vypnutý.
+                Bez JavaScriptu archiv nefunguje. Pokud máte pocit, že jde
+                o chybu, <a href="mailto:ohlasy@ohlasy.info">napište nám</a>.</p>
+            </noscript>
+        </div>
+    </div>
+
+    <footer class="text-muted">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="list-unstyled">
+                        <li><em>Ohlasy, noviny <span class="nobreak">pro Boskovice a okolí</span></em>
+                        <li>vydává spolek šílenců, <span class="nobreak">protože kdo jiný by dneska dělal noviny</span>
+                        <li><a href="mailto:ohlasy@ohlasy.info">ohlasy@ohlasy.info</a>,
+                            <a href="/inzerce.html">inzerujte u nás</a>,
+                            <a href="http://predplatne.ohlasy.info?utm_source=web_footer">předplaťte si nás!</a>
+                        <li>+420 608 763 954
+                        <li><a href="https://www.facebook.com/ohlasy">Facebook</a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
