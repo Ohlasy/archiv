@@ -5,6 +5,7 @@ import Article exposing (..)
 import State exposing (..)
 import Html exposing (..)
 import Html.Events exposing (..)
+import Html.Attributes exposing (href)
 import List.Extra exposing (unique)
 
 rootView : Model -> Html Msg
@@ -45,4 +46,9 @@ renderFilter articles f =
         ]
 
 renderArticle : Article -> Html Msg
-renderArticle a = h1 [] [text a.title]
+renderArticle article =
+    let absoluteURL = "http://ohlasy.info" ++ article.relativeURL
+    in
+        a [href absoluteURL] [
+            h1 [] [text article.title]
+            ]
