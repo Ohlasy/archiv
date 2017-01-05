@@ -1,2 +1,2 @@
 exclude: ['src', '*.json', "CNAME", "Gemfile", "Gemfile.lock", "elm*"]
-include: ['index.html']
+include: ['index.html', 'archiv.js']
