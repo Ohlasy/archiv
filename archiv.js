@@ -7214,9 +7214,9 @@ var _Ohlasy$archiv$Article$pubDateDecoder = A2(
 		}
 	},
 	_elm_lang$core$Json_Decode$string);
-var _Ohlasy$archiv$Article$Article = F7(
-	function (a, b, c, d, e, f, g) {
-		return {relativeURL: a, title: b, author: c, category: d, coverPhotoURL: e, serialID: f, pubDate: g};
+var _Ohlasy$archiv$Article$Article = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {relativeURL: a, title: b, author: c, perex: d, category: e, coverPhotoURL: f, serialID: g, pubDate: h};
 	});
 var _Ohlasy$archiv$Article$articleDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
@@ -7236,17 +7236,21 @@ var _Ohlasy$archiv$Article$articleDecoder = A3(
 				_elm_lang$core$Json_Decode$nullable(_elm_lang$core$Json_Decode$string),
 				A3(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-					'author',
-					_elm_lang$core$Json_Decode$string,
+					'perex',
+					_elm_lang$core$Json_Decode$nullable(_elm_lang$core$Json_Decode$string),
 					A3(
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-						'title',
+						'author',
 						_elm_lang$core$Json_Decode$string,
 						A3(
 							_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-							'relativeURL',
+							'title',
 							_elm_lang$core$Json_Decode$string,
-							_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_Ohlasy$archiv$Article$Article))))))));
+							A3(
+								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+								'relativeURL',
+								_elm_lang$core$Json_Decode$string,
+								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_Ohlasy$archiv$Article$Article)))))))));
 var _Ohlasy$archiv$Article$articleListDecoder = _elm_lang$core$Json_Decode$list(_Ohlasy$archiv$Article$articleDecoder);
 
 var _Ohlasy$archiv$Filter$defaultFilters = {
@@ -11594,7 +11598,62 @@ var _elm_community$list_extra$List_Extra$init = function () {
 var _elm_community$list_extra$List_Extra$last = _elm_community$list_extra$List_Extra$foldl1(
 	_elm_lang$core$Basics$flip(_elm_lang$core$Basics$always));
 
+var _Ohlasy$archiv$Views$localizedMonthName = function (d) {
+	var _p0 = _elm_lang$core$Date$month(d);
+	switch (_p0.ctor) {
+		case 'Jan':
+			return 'ledna';
+		case 'Feb':
+			return 'února';
+		case 'Mar':
+			return 'března';
+		case 'Apr':
+			return 'dubna';
+		case 'May':
+			return 'května';
+		case 'Jun':
+			return 'června';
+		case 'Jul':
+			return 'července';
+		case 'Aug':
+			return 'srpna';
+		case 'Sep':
+			return 'září';
+		case 'Oct':
+			return 'října';
+		case 'Nov':
+			return 'listopadu';
+		default:
+			return 'prosince';
+	}
+};
+var _Ohlasy$archiv$Views$renderDate = function (date) {
+	var s = _elm_lang$core$Basics$toString;
+	var y = _elm_lang$core$Date$year(date);
+	var d = _elm_lang$core$Date$day(date);
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		s(d),
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'. ',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_Ohlasy$archiv$Views$localizedMonthName(date),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					' ',
+					s(y)))));
+};
 var _Ohlasy$archiv$Views$renderArticle = function (article) {
+	var perex = function () {
+		var _p1 = article.perex;
+		if (_p1.ctor === 'Just') {
+			return _p1._0;
+		} else {
+			return '';
+		}
+	}();
 	var absoluteURL = A2(_elm_lang$core$Basics_ops['++'], 'http://ohlasy.info', article.relativeURL);
 	return A2(
 		_elm_lang$html$Html$a,
@@ -11606,12 +11665,84 @@ var _Ohlasy$archiv$Views$renderArticle = function (article) {
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$h1,
-				{ctor: '[]'},
+				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(article.title),
+					_0: _elm_lang$html$Html_Attributes$class('article'),
 					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h2,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(article.title),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('metadata'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$span,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('author'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(article.author),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(' / '),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$span,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('pubDate'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(
+													_Ohlasy$archiv$Views$renderDate(article.pubDate)),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$p,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('perex'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(perex),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
 				}),
 			_1: {ctor: '[]'}
 		});
@@ -11668,31 +11799,47 @@ var _Ohlasy$archiv$Views$renderFilter = F2(
 				}
 			});
 	});
+var _Ohlasy$archiv$Views$renderResultStats = F2(
+	function (filtered, all) {
+		var allCount = _elm_lang$core$List$length(all);
+		var filterCount = _elm_lang$core$List$length(filtered);
+		return _elm_lang$html$Html$text(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'nalezených článků: ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(filterCount),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'/',
+						_elm_lang$core$Basics$toString(allCount)))));
+	});
 var _Ohlasy$archiv$Views$applyFilters = F3(
 	function (articles, filters, env) {
-		var _p0 = filters;
-		if (_p0.ctor === '::') {
+		var _p2 = filters;
+		if (_p2.ctor === '::') {
 			return A3(
 				_Ohlasy$archiv$Filter$filterArticles,
-				A3(_Ohlasy$archiv$Views$applyFilters, articles, _p0._1, env),
-				_p0._0,
+				A3(_Ohlasy$archiv$Views$applyFilters, articles, _p2._1, env),
+				_p2._0,
 				env);
 		} else {
 			return articles;
 		}
 	});
 var _Ohlasy$archiv$Views$rootView = function (model) {
-	var _p1 = model;
-	switch (_p1.ctor) {
+	var _p3 = model;
+	switch (_p3.ctor) {
 		case 'Loading':
 			return _elm_lang$html$Html$text('Načítám…');
 		case 'Failed':
 			return _elm_lang$html$Html$text(
-				A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p1._0));
+				A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p3._0));
 		default:
-			var _p3 = _p1._1;
-			var _p2 = _p1._0;
-			var filteredArticles = A3(_Ohlasy$archiv$Views$applyFilters, _p2, _p3, _p1._2);
+			var _p5 = _p3._1;
+			var _p4 = _p3._0;
+			var filteredArticles = A3(_Ohlasy$archiv$Views$applyFilters, _p4, _p5, _p3._2);
 			return A2(
 				_elm_lang$html$Html$div,
 				{ctor: '[]'},
@@ -11700,25 +11847,39 @@ var _Ohlasy$archiv$Views$rootView = function (model) {
 					ctor: '::',
 					_0: A2(
 						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						A2(
-							_elm_lang$core$List$map,
-							_Ohlasy$archiv$Views$renderFilter(_p2),
-							_p3)),
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('resultStats'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(_Ohlasy$archiv$Views$renderResultStats, filteredArticles, _p4),
+							_1: {ctor: '[]'}
+						}),
 					_1: {
 						ctor: '::',
 						_0: A2(
 							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							A2(_elm_lang$core$List$map, _Ohlasy$archiv$Views$renderArticle, filteredArticles)),
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('filters'),
+								_1: {ctor: '[]'}
+							},
+							A2(
+								_elm_lang$core$List$map,
+								_Ohlasy$archiv$Views$renderFilter(_p4),
+								_p5)),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'Celkem článků: ',
-									_elm_lang$core$Basics$toString(
-										_elm_lang$core$List$length(filteredArticles)))),
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('articles'),
+									_1: {ctor: '[]'}
+								},
+								A2(_elm_lang$core$List$map, _Ohlasy$archiv$Views$renderArticle, filteredArticles)),
 							_1: {ctor: '[]'}
 						}
 					}

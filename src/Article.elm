@@ -9,6 +9,7 @@ type alias Article = {
     relativeURL: String,
     title: String,
     author: String,
+    perex: Maybe String,
     category: Maybe String,
     coverPhotoURL: Maybe String,
     serialID: Maybe String,
@@ -21,6 +22,7 @@ articleDecoder =
         |> required "relativeURL" string
         |> required "title" string
         |> required "author" string
+        |> required "perex" (nullable string)
         |> required "category" (nullable string)
         |> required "cover-photo" (nullable string)
         |> required "serial" (nullable string)
