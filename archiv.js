@@ -11685,81 +11685,92 @@ var _Ohlasy$archiv$Views$renderArticle = function (article) {
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('article'),
+					_0: _elm_lang$html$Html_Attributes$class('article-wrapper'),
 					_1: {ctor: '[]'}
 				},
 				{
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$h2,
-						{ctor: '[]'},
+						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(article.title),
+							_0: _elm_lang$html$Html_Attributes$class('article'),
 							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('metadata'),
-								_1: {ctor: '[]'}
-							},
-							{
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$h2,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(article.title),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$span,
+									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('author'),
+										_0: _elm_lang$html$Html_Attributes$class('metadata'),
 										_1: {ctor: '[]'}
 									},
 									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text(article.author),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html$text(' / '),
-									_1: {
 										ctor: '::',
 										_0: A2(
 											_elm_lang$html$Html$span,
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('pubDate'),
+												_0: _elm_lang$html$Html_Attributes$class('author'),
 												_1: {ctor: '[]'}
 											},
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html$text(
-													_Ohlasy$archiv$Views$renderDate(article.pubDate)),
+												_0: _elm_lang$html$Html$text(article.author),
 												_1: {ctor: '[]'}
 											}),
-										_1: {ctor: '[]'}
-									}
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(' / '),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$span,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('pubDate'),
+														_1: {ctor: '[]'}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text(
+															_Ohlasy$archiv$Views$renderDate(article.pubDate)),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$p,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('perex'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(perex),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
 								}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$p,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('perex'),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text(perex),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
-					}
+							}
+						}),
+					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
 		});

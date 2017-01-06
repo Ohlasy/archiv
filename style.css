@@ -109,17 +109,20 @@ option, select, input {
     margin-right: 330px;
 }
 
-.article {
-    width: 30%;
-    height: 300px;
+.article-wrapper {
+    width: 33.3%;
     display: inline-block;
     vertical-align: top;
+    height: 300px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.article {
     border-top: 1px solid gray;
     margin-right: 30px;
     font-family: 'PT Serif', serif;
     color: #333;
-    overflow: hidden;
-    margin-bottom: 30px;
 }
 
 .article h2 {
@@ -135,4 +138,20 @@ option, select, input {
 .article .metadata {
     color: gray;
     text-transform: uppercase;
+}
+
+/* Responsive Overrides */
+
+@media only screen and (max-width: 1280px) {
+    .article-wrapper { width: 50%; }
+}
+
+@media only screen and (max-width: 800px) {
+    .article-wrapper { width: 100%; height: auto; margin-bottom: 0; }
+}
+
+@media only screen and (max-width: 600px) {
+    .articles { margin-right: 30px; }
+    .article-wrapper { width: 100%; height: auto; margin-bottom: 0; }
+    .sidebar { display: none; }
 }

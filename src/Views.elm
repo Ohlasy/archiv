@@ -89,14 +89,16 @@ renderArticle article =
             Nothing -> ""
     in
         a [href absoluteURL] [
-            div [class "article"] [
-                h2 [] [text article.title],
-                div [class "metadata"] [
-                    span [class "author"] [text article.author],
-                    text " / ",
-                    span [class "pubDate"] [text (renderDate article.pubDate)]
-                ],
-                p [class "perex"] [text perex]
+            div [class "article-wrapper"] [
+                div [class "article"] [
+                    h2 [] [text article.title],
+                    div [class "metadata"] [
+                        span [class "author"] [text article.author],
+                        text " / ",
+                        span [class "pubDate"] [text (renderDate article.pubDate)]
+                    ],
+                    p [class "perex"] [text perex]
+                ]
             ]
         ]
 
