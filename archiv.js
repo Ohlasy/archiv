@@ -7697,60 +7697,77 @@ var _Ohlasy$archiv$State$Displaying = F3(
 var _Ohlasy$archiv$State$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		if (_p0.ctor === 'ParseArticles') {
-			var _p1 = _p0._0;
-			if (_p1.ctor === 'Ok') {
-				var _p2 = A2(_elm_lang$core$Json_Decode$decodeString, _Ohlasy$archiv$Article$articleListDecoder, _p1._0);
-				if (_p2.ctor === 'Ok') {
+		switch (_p0.ctor) {
+			case 'ParseArticles':
+				var _p1 = _p0._0;
+				if (_p1.ctor === 'Ok') {
+					var _p2 = A2(_elm_lang$core$Json_Decode$decodeString, _Ohlasy$archiv$Article$articleListDecoder, _p1._0);
+					if (_p2.ctor === 'Ok') {
+						return {
+							ctor: '_Tuple2',
+							_0: A3(_Ohlasy$archiv$State$Displaying, _p2._0, _Ohlasy$archiv$Filter$defaultFilters, _elm_lang$core$Dict$empty),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _Ohlasy$archiv$State$Failed(
+								_elm_lang$core$Basics$toString(_p2._0)),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
+				} else {
 					return {
 						ctor: '_Tuple2',
-						_0: A3(_Ohlasy$archiv$State$Displaying, _p2._0, _Ohlasy$archiv$Filter$defaultFilters, _elm_lang$core$Dict$empty),
+						_0: _Ohlasy$archiv$State$Failed(
+							_elm_lang$core$Basics$toString(_p1._0)),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'UpdateFilterValue':
+				var _p6 = _p0._0;
+				var _p3 = model;
+				if (_p3.ctor === 'Displaying') {
+					var _p5 = _p3._2;
+					var updatedSettings = function () {
+						var _p4 = _p0._1;
+						if (_p4.ctor === 'Just') {
+							return A3(_elm_lang$core$Dict$insert, _p6.name, _p4._0, _p5);
+						} else {
+							return A2(_elm_lang$core$Dict$remove, _p6.name, _p5);
+						}
+					}();
+					return {
+						ctor: '_Tuple2',
+						_0: A3(_Ohlasy$archiv$State$Displaying, _p3._0, _p3._1, updatedSettings),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					return {
 						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed(
-							_elm_lang$core$Basics$toString(_p2._0)),
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			} else {
-				return {
-					ctor: '_Tuple2',
-					_0: _Ohlasy$archiv$State$Failed(
-						_elm_lang$core$Basics$toString(_p1._0)),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			}
-		} else {
-			var _p6 = _p0._0;
-			var _p3 = model;
-			if (_p3.ctor === 'Displaying') {
-				var _p5 = _p3._2;
-				var updatedSettings = function () {
-					var _p4 = _p0._1;
-					if (_p4.ctor === 'Just') {
-						return A3(_elm_lang$core$Dict$insert, _p6.name, _p4._0, _p5);
-					} else {
-						return A2(_elm_lang$core$Dict$remove, _p6.name, _p5);
-					}
-				}();
-				return {
-					ctor: '_Tuple2',
-					_0: A3(_Ohlasy$archiv$State$Displaying, _p3._0, _p3._1, updatedSettings),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			} else {
-				return {
-					ctor: '_Tuple2',
-					_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			}
+			default:
+				var _p7 = model;
+				if (_p7.ctor === 'Displaying') {
+					return {
+						ctor: '_Tuple2',
+						_0: A3(_Ohlasy$archiv$State$Displaying, _p7._0, _p7._1, _elm_lang$core$Dict$empty),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 		}
 	});
 var _Ohlasy$archiv$State$Loading = {ctor: 'Loading'};
+var _Ohlasy$archiv$State$RemoveAllFilters = {ctor: 'RemoveAllFilters'};
 var _Ohlasy$archiv$State$UpdateFilterValue = F2(
 	function (a, b) {
 		return {ctor: 'UpdateFilterValue', _0: a, _1: b};
@@ -11747,8 +11764,31 @@ var _Ohlasy$archiv$Views$renderArticle = function (article) {
 			_1: {ctor: '[]'}
 		});
 };
-var _Ohlasy$archiv$Views$renderFilter = F2(
-	function (articles, f) {
+var _Ohlasy$archiv$Views$applyFilters = F3(
+	function (articles, filters, env) {
+		var _p2 = filters;
+		if (_p2.ctor === '::') {
+			return A3(
+				_Ohlasy$archiv$Filter$filterArticles,
+				A3(_Ohlasy$archiv$Views$applyFilters, articles, _p2._1, env),
+				_p2._0,
+				env);
+		} else {
+			return articles;
+		}
+	});
+var _Ohlasy$archiv$Views$renderArticles = function (articles) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('articles'),
+			_1: {ctor: '[]'}
+		},
+		A2(_elm_lang$core$List$map, _Ohlasy$archiv$Views$renderArticle, articles));
+};
+var _Ohlasy$archiv$Views$renderFilter = F3(
+	function (articles, settings, f) {
 		var possibleValues = _elm_community$list_extra$List_Extra$unique(
 			A2(_elm_lang$core$List$filterMap, f.selector, articles));
 		var valueOptions = A2(
@@ -11764,10 +11804,16 @@ var _Ohlasy$archiv$Views$renderFilter = F2(
 					});
 			},
 			possibleValues);
+		var currentValue = A2(_elm_lang$core$Dict$get, f.name, settings);
 		var noFilterPlaceholder = 'bez omezení';
 		var noFilterOption = A2(
 			_elm_lang$html$Html$option,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$selected(
+					_elm_lang$core$Native_Utils.eq(currentValue, _elm_lang$core$Maybe$Nothing)),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html$text(noFilterPlaceholder),
@@ -11814,34 +11860,110 @@ var _Ohlasy$archiv$Views$renderFilter = F2(
 				}
 			});
 	});
+var _Ohlasy$archiv$Views$renderFilterControls = F3(
+	function (articles, filters, settings) {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			A2(
+				_elm_lang$core$List$map,
+				A2(_Ohlasy$archiv$Views$renderFilter, articles, settings),
+				filters),
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_Ohlasy$archiv$State$RemoveAllFilters),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$disabled(
+								_elm_lang$core$Dict$isEmpty(settings)),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Smazat filtry'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _Ohlasy$archiv$Views$renderSidebar = F3(
+	function (articles, filters, settings) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('sidebar'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('search'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$input,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$type_('text'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$placeholder('hledání ještě nefunguje'),
+									_1: {ctor: '[]'}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('filters'),
+							_1: {ctor: '[]'}
+						},
+						A3(_Ohlasy$archiv$Views$renderFilterControls, articles, filters, settings)),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 var _Ohlasy$archiv$Views$renderResultStats = F2(
 	function (filtered, all) {
 		var allCount = _elm_lang$core$List$length(all);
 		var filterCount = _elm_lang$core$List$length(filtered);
-		return _elm_lang$html$Html$text(
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'nalezených článků: ',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(filterCount),
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('resultStats'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						'/',
-						_elm_lang$core$Basics$toString(allCount)))));
-	});
-var _Ohlasy$archiv$Views$applyFilters = F3(
-	function (articles, filters, env) {
-		var _p2 = filters;
-		if (_p2.ctor === '::') {
-			return A3(
-				_Ohlasy$archiv$Filter$filterArticles,
-				A3(_Ohlasy$archiv$Views$applyFilters, articles, _p2._1, env),
-				_p2._0,
-				env);
-		} else {
-			return articles;
-		}
+						'nalezených článků: ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(filterCount),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'/',
+								_elm_lang$core$Basics$toString(allCount))))),
+				_1: {ctor: '[]'}
+			});
 	});
 var _Ohlasy$archiv$Views$rootView = function (model) {
 	var _p3 = model;
@@ -11852,86 +11974,22 @@ var _Ohlasy$archiv$Views$rootView = function (model) {
 			return _elm_lang$html$Html$text(
 				A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p3._0));
 		default:
+			var _p6 = _p3._2;
 			var _p5 = _p3._1;
 			var _p4 = _p3._0;
-			var filteredArticles = A3(_Ohlasy$archiv$Views$applyFilters, _p4, _p5, _p3._2);
+			var filteredArticles = A3(_Ohlasy$archiv$Views$applyFilters, _p4, _p5, _p6);
 			return A2(
 				_elm_lang$html$Html$div,
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('resultStats'),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: A2(_Ohlasy$archiv$Views$renderResultStats, filteredArticles, _p4),
-							_1: {ctor: '[]'}
-						}),
+					_0: A2(_Ohlasy$archiv$Views$renderResultStats, filteredArticles, _p4),
 					_1: {
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('sidebar'),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$div,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('search'),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$input,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$type_('text'),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$placeholder('hledání ještě nefunguje'),
-													_1: {ctor: '[]'}
-												}
-											},
-											{ctor: '[]'}),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$div,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('filters'),
-											_1: {ctor: '[]'}
-										},
-										A2(
-											_elm_lang$core$List$map,
-											_Ohlasy$archiv$Views$renderFilter(_p4),
-											_p5)),
-									_1: {ctor: '[]'}
-								}
-							}),
+						_0: A3(_Ohlasy$archiv$Views$renderSidebar, _p4, _p5, _p6),
 						_1: {
 							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$div,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('articles'),
-									_1: {ctor: '[]'}
-								},
-								A2(_elm_lang$core$List$map, _Ohlasy$archiv$Views$renderArticle, filteredArticles)),
+							_0: _Ohlasy$archiv$Views$renderArticles(filteredArticles),
 							_1: {ctor: '[]'}
 						}
 					}

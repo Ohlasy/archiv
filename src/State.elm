@@ -16,7 +16,8 @@ type Model =
 
 type Msg =
     ParseArticles (Result Http.Error String) |
-    UpdateFilterValue Filter (Maybe String)
+    UpdateFilterValue Filter (Maybe String) |
+    RemoveAllFilters
 
 -- UPDATE
 
@@ -40,6 +41,12 @@ update msg model =
                         Just val -> Dict.insert f.name val settings
                         Nothing -> Dict.remove f.name settings
                     in (Displaying articles filters updatedSettings, Cmd.none)
+                _ ->
+                    (Failed "Invalid state", Cmd.none)
+        RemoveAllFilters ->
+            case model of
+                Displaying articles filters settings ->
+                    (Displaying articles filters Dict.empty, Cmd.none)
                 _ ->
                     (Failed "Invalid state", Cmd.none)
 

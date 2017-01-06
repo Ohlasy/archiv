@@ -8,6 +8,7 @@ import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 import List.Extra exposing (unique)
 import Date exposing (..)
+import Dict
 
 rootView : Model -> Html Msg
 rootView model =
@@ -19,36 +20,46 @@ rootView model =
         Displaying articles filters settings ->
             let filteredArticles = applyFilters articles filters settings
             in div [] [
-                div [class "resultStats"] [renderResultStats filteredArticles articles],
-                div [class "sidebar"] [
-                    div [class "search"] [
-                        input [type_ "text", placeholder "hledání ještě nefunguje"] []
-                    ],
-                    div [class "filters"] (List.map (renderFilter articles) filters)
-                ],
-                div [class "articles"] (List.map renderArticle filteredArticles)
+                renderResultStats filteredArticles articles,
+                renderSidebar articles filters settings,
+                renderArticles filteredArticles
             ]
 
-applyFilters : List Article -> List Filter -> FilterSettings -> List Article
-applyFilters articles filters env =
-    case filters of
-        fi::xs -> filterArticles (applyFilters articles xs env) fi env
-        [] -> articles
+-- Result Statistics
 
 renderResultStats : List Article -> List Article -> Html Msg
 renderResultStats filtered all =
     let filterCount = List.length filtered
         allCount = List.length all
     in
-        text ("nalezených článků: " ++ (toString filterCount) ++ "/" ++ (toString allCount))
+        div [class "resultStats"] [
+            text ("nalezených článků: " ++ (toString filterCount) ++ "/" ++ (toString allCount))
+        ]
 
-renderFilter : List Article -> Filter -> Html Msg
-renderFilter articles f =
+-- Sidebar
+
+renderSidebar : List Article -> List Filter -> FilterSettings -> Html Msg
+renderSidebar articles filters settings =
+    div [class "sidebar"] [
+        div [class "search"] [
+            input [type_ "text", placeholder "hledání ještě nefunguje"] []
+        ],
+        div [class "filters"] (renderFilterControls articles filters settings)
+    ]
+
+renderFilterControls : List Article -> List Filter -> FilterSettings -> List (Html Msg)
+renderFilterControls articles filters settings =
+     (List.map (renderFilter articles settings) filters) ++
+         [button [onClick RemoveAllFilters, disabled (Dict.isEmpty settings)] [text "Smazat filtry"]]
+
+renderFilter : List Article -> FilterSettings -> Filter -> Html Msg
+renderFilter articles settings f =
     let
         noFilterPlaceholder = "bez omezení"
+        currentValue = Dict.get f.name settings
         possibleValues = unique (List.filterMap f.selector articles)
         valueOptions = List.map (\x -> option [] [text x]) possibleValues
-        noFilterOption = option [] [text noFilterPlaceholder]
+        noFilterOption = option [selected (currentValue == Nothing)] [text noFilterPlaceholder]
         action tag = if (tag == noFilterPlaceholder)
             then UpdateFilterValue f Nothing
             else UpdateFilterValue f (Just tag)
@@ -57,6 +68,18 @@ renderFilter articles f =
             div [class "filterLabel"] [text f.name],
             select [onInput action] (noFilterOption :: valueOptions)
         ]
+
+-- Articles
+
+renderArticles : List Article -> Html Msg
+renderArticles articles =
+    div [class "articles"] (List.map renderArticle articles)
+
+applyFilters : List Article -> List Filter -> FilterSettings -> List Article
+applyFilters articles filters env =
+    case filters of
+        fi::xs -> filterArticles (applyFilters articles xs env) fi env
+        [] -> articles
 
 renderArticle : Article -> Html Msg
 renderArticle article =
