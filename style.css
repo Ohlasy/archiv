@@ -148,10 +148,12 @@ option, select, input {
 
 @media only screen and (max-width: 800px) {
     .article-wrapper { width: 100%; height: auto; margin-bottom: 0; }
+    .article { margin-right: 0; }
 }
 
 @media only screen and (max-width: 600px) {
     .articles { margin-right: 30px; }
     .article-wrapper { width: 100%; height: auto; margin-bottom: 0; }
+    .article { margin-right: 0; }
     .sidebar { display: none; }
 }
