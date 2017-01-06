@@ -22,7 +22,7 @@ rootView model =
                 div [class "resultStats"] [renderResultStats filteredArticles articles],
                 div [class "sidebar"] [
                     div [class "search"] [
-                        input [type_ "text", placeholder "hledat"] []
+                        input [type_ "text", placeholder "hledání ještě nefunguje"] []
                     ],
                     div [class "filters"] (List.map (renderFilter articles) filters)
                 ],

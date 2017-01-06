@@ -11767,11 +11767,7 @@ var _Ohlasy$archiv$Views$renderFilter = F2(
 		var noFilterPlaceholder = 'bez omezení';
 		var noFilterOption = A2(
 			_elm_lang$html$Html$option,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('emptyFilter'),
-				_1: {ctor: '[]'}
-			},
+			{ctor: '[]'},
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html$text(noFilterPlaceholder),
@@ -11903,7 +11899,7 @@ var _Ohlasy$archiv$Views$rootView = function (model) {
 												_0: _elm_lang$html$Html_Attributes$type_('text'),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$placeholder('hledat'),
+													_0: _elm_lang$html$Html_Attributes$placeholder('hledání ještě nefunguje'),
 													_1: {ctor: '[]'}
 												}
 											},
