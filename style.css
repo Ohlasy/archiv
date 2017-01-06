@@ -6,6 +6,7 @@ html, body {
     margin: 0;
     font-size: 16px;
     padding-bottom: 30px;
+    padding-top: 32px;
 }
 
 #main {
@@ -16,6 +17,13 @@ html, body {
 
 .header {
     border-bottom: 1px solid #ddd;
+    position: fixed;
+    background: white;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px #ddd;
 }
 
 h1 {
@@ -37,6 +45,7 @@ h1 small {
 
 .sidebar {
     position: fixed;
+    z-index: 2000;
     width: 300px;
     background: white;
     top: 0;
