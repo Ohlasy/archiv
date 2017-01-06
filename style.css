@@ -35,7 +35,7 @@ h1 small {
 
 /* Filter Sidebar */
 
-.filters {
+.sidebar {
     position: fixed;
     width: 300px;
     background: white;
@@ -43,6 +43,45 @@ h1 small {
     right: 0;
     bottom: 0;
     border-left: 1px solid #ddd;
+}
+
+option, select, input {
+    font-size: 16px;
+}
+
+.filters {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+
+.filter {
+    margin-bottom: 10px;
+}
+
+.filterLabel {
+    text-transform: lowercase;
+}
+
+.filter select {
+    width: 100%;
+}
+
+/* Search Field */
+
+.search {
+    margin-top: 20px;
+    padding-bottom: 17px;
+    padding-left: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.search input {
+    border: none;
+}
+
+.search input:focus {
+    outline: none;
 }
 
 /* Results Stats */

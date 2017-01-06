@@ -5,7 +5,7 @@ import Article exposing (..)
 import State exposing (..)
 import Html exposing (..)
 import Html.Events exposing (..)
-import Html.Attributes exposing (href, class)
+import Html.Attributes exposing (..)
 import List.Extra exposing (unique)
 import Date exposing (..)
 
@@ -20,7 +20,12 @@ rootView model =
             let filteredArticles = applyFilters articles filters settings
             in div [] [
                 div [class "resultStats"] [renderResultStats filteredArticles articles],
-                div [class "filters"] (List.map (renderFilter articles) filters),
+                div [class "sidebar"] [
+                    div [class "search"] [
+                        input [type_ "text", placeholder "hledat"] []
+                    ],
+                    div [class "filters"] (List.map (renderFilter articles) filters)
+                ],
                 div [class "articles"] (List.map renderArticle filteredArticles)
             ]
 
@@ -48,8 +53,8 @@ renderFilter articles f =
             then UpdateFilterValue f Nothing
             else UpdateFilterValue f (Just tag)
     in
-        div [] [
-            text f.name,
+        div [class "filter"] [
+            div [class "filterLabel"] [text f.name],
             select [onInput action] (noFilterOption :: valueOptions)
         ]
 
