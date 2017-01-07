@@ -106,7 +106,7 @@ option, select, input {
 
 .articles {
     padding-left: 30px;
-    margin-right: 330px;
+    margin-right: 300px;
 }
 
 .article-wrapper {
@@ -148,12 +148,10 @@ option, select, input {
 
 @media only screen and (max-width: 800px) {
     .article-wrapper { width: 100%; height: auto; margin-bottom: 0; }
-    .article { margin-right: 0; }
 }
 
 @media only screen and (max-width: 600px) {
-    .articles { margin-right: 30px; }
+    .articles { margin-right: 0; }
     .article-wrapper { width: 100%; height: auto; margin-bottom: 0; }
-    .article { margin-right: 0; }
     .sidebar { display: none; }
 }
