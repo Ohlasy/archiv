@@ -11,19 +11,20 @@ import Date exposing (..)
 import Dict
 
 rootView : Model -> Html Msg
-rootView model =
-    case model of
-        Loading ->
-            div [class "status"] [text "Načítám…"]
-        Failed e ->
-            div [class "status"] [text ("Chyba: " ++ e)]
-        Displaying articles filters settings ->
-            let filteredArticles = applyFilters articles filters settings
-            in div [] [
-                renderResultStats filteredArticles articles,
-                renderSidebar articles filters settings,
-                renderArticles filteredArticles
-            ]
+rootView model = case model of
+    Loading ->
+        div [class "status"] [text "Načítám…"]
+    Failed e ->
+        div [class "status"] [text ("Chyba: " ++ e)]
+    Displaying state ->
+        let
+            { articles, filters, settings, searchQuery } = state
+            filteredArticles = applyFilters articles filters settings
+        in div [] [
+            renderResultStats filteredArticles articles,
+            renderSidebar articles filters settings,
+            renderArticles filteredArticles
+        ]
 
 -- Result Statistics
 
@@ -42,7 +43,10 @@ renderSidebar : List Article -> List Filter -> FilterSettings -> Html Msg
 renderSidebar articles filters settings =
     div [class "sidebar"] [
         div [class "search"] [
-            input [type_ "text", placeholder "hledání ještě nefunguje"] []
+            Html.form [onSubmit SubmitSearch] [
+                input [type_ "text", placeholder "hledat", onInput (\s -> UpdateSearchQuery s)] [],
+                input [type_ "submit", hidden True] []
+            ]
         ],
         div [class "filters"] (renderFilterControls articles filters settings)
     ]

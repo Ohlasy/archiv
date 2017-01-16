@@ -17,5 +17,8 @@
     <script>
         var rootNode = document.getElementById('main');
         var app = Elm.Main.embed(rootNode);
+        app.ports.openURL.subscribe(function(targetURL) {
+            window.location = targetURL;
+        });
     </script>
 </body>
