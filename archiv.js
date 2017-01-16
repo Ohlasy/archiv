@@ -7824,8 +7824,7 @@ var _Ohlasy$archiv$State$update = F2(
 			default:
 				var _p9 = model;
 				if (_p9.ctor === 'Displaying') {
-					var _p10 = _p9._0;
-					var query = A2(_elm_lang$core$Basics_ops['++'], _p10.searchQuery, ' site:ohlasy.info');
+					var query = A2(_elm_lang$core$Basics_ops['++'], _p9._0.searchQuery, ' site:ohlasy.info');
 					var targetURL = A2(
 						_elm_lang$core$Basics_ops['++'],
 						'http://www.google.cz/search?q=',
@@ -7835,10 +7834,7 @@ var _Ohlasy$archiv$State$update = F2(
 							'&sa=Hledej'));
 					return {
 						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Displaying(
-							_elm_lang$core$Native_Utils.update(
-								_p10,
-								{searchQuery: ''})),
+						_0: model,
 						_1: _Ohlasy$archiv$Navigation$openURL(targetURL)
 					};
 				} else {

@@ -65,7 +65,7 @@ update msg model = case msg of
                 query = state.searchQuery ++ " site:ohlasy.info"
                 targetURL = "http://www.google.cz/search?q=" ++ (encodeUri query) ++ "&sa=Hledej"
             in
-                (Displaying { state | searchQuery = "" }, openURL targetURL)
+                (model, openURL targetURL)
         _ ->
             (Failed "Invalid state", Cmd.none)
 
