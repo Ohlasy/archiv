@@ -7253,16 +7253,35 @@ var _Ohlasy$archiv$Article$articleDecoder = A3(
 								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_Ohlasy$archiv$Article$Article)))))))));
 var _Ohlasy$archiv$Article$articleListDecoder = _elm_lang$core$Json_Decode$list(_Ohlasy$archiv$Article$articleDecoder);
 
+var _Ohlasy$archiv$Filter$serialDecorator = function (s) {
+	var _p0 = s;
+	switch (_p0) {
+		case 'ghetto':
+			return 'Příběhy z ghetta';
+		case 'depozitar':
+			return 'Z muzejního depozitáře';
+		case 'krajiny':
+			return 'Krajiny Boskovicka';
+		case 'stromy':
+			return 'Život pod stromy';
+		case 'jazyk':
+			return 'Rendez-vous s jazykem';
+		case 'historie':
+			return 'Pohledy do historie';
+		default:
+			return s;
+	}
+};
 var _Ohlasy$archiv$Filter$filterArticles = F3(
 	function (articles, f, env) {
-		var _p0 = A2(_elm_lang$core$Dict$get, f.name, env);
-		if (_p0.ctor === 'Just') {
+		var _p1 = A2(_elm_lang$core$Dict$get, f.name, env);
+		if (_p1.ctor === 'Just') {
 			return A2(
 				_elm_lang$core$List$filter,
 				function (a) {
-					var _p1 = f.selector(a);
-					if (_p1.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(_p1._0, _p0._0);
+					var _p2 = f.selector(a);
+					if (_p2.ctor === 'Just') {
+						return _elm_lang$core$Native_Utils.eq(_p2._0, _p1._0);
 					} else {
 						return false;
 					}
@@ -7281,11 +7300,11 @@ var _Ohlasy$archiv$Filter$defaultFilters = {
 	_0: A3(
 		_Ohlasy$archiv$Filter$Filter,
 		'Autor',
-		function (_p2) {
+		function (_p3) {
 			return _elm_lang$core$Maybe$Just(
 				function (_) {
 					return _.author;
-				}(_p2));
+				}(_p3));
 		},
 		_elm_lang$core$Basics$identity),
 	_1: {
@@ -7305,19 +7324,19 @@ var _Ohlasy$archiv$Filter$defaultFilters = {
 				function (_) {
 					return _.serialID;
 				},
-				_elm_lang$core$Basics$identity),
+				_Ohlasy$archiv$Filter$serialDecorator),
 			_1: {
 				ctor: '::',
 				_0: A3(
 					_Ohlasy$archiv$Filter$Filter,
 					'Rok',
-					function (_p3) {
+					function (_p4) {
 						return _elm_lang$core$Maybe$Just(
 							_elm_lang$core$Basics$toString(
 								_elm_lang$core$Date$year(
 									function (_) {
 										return _.pubDate;
-									}(_p3))));
+									}(_p4))));
 					},
 					_elm_lang$core$Basics$identity),
 				_1: {ctor: '[]'}
@@ -11811,10 +11830,15 @@ var _Ohlasy$archiv$Views$renderFilter = F3(
 			function (x) {
 				return A2(
 					_elm_lang$html$Html$option,
-					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(x),
+						_0: _elm_lang$html$Html_Attributes$value(x),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							f.valueDecorator(x)),
 						_1: {ctor: '[]'}
 					});
 			},

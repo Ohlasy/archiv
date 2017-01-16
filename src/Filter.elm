@@ -8,7 +8,8 @@ type alias FilterSettings = Dict String String
 
 type alias Filter = {
     name: String,
-    selector: Article -> Maybe String
+    selector: Article -> Maybe String,
+    valueDecorator: (String -> String)
 }
 
 filterArticles : List Article -> Filter -> FilterSettings -> List Article
@@ -22,8 +23,18 @@ filterArticles articles f env =
 
 defaultFilters : List Filter
 defaultFilters = [
-    Filter "Autor" (Just << .author),
-    Filter "Rubrika" .category,
-    Filter "Seriál" .serialID,
-    Filter "Rok" (Just << toString << Date.year << .pubDate)
+    Filter "Autor" (Just << .author) identity,
+    Filter "Rubrika" .category identity,
+    Filter "Seriál" .serialID serialDecorator,
+    Filter "Rok" (Just << toString << Date.year << .pubDate) identity
     ]
+
+serialDecorator : String -> String
+serialDecorator s = case s of
+    "ghetto" -> "Příběhy z ghetta"
+    "depozitar" -> "Z muzejního depozitáře"
+    "krajiny" -> "Krajiny Boskovicka"
+    "stromy" -> "Život pod stromy"
+    "jazyk" -> "Rendez-vous s jazykem"
+    "historie" -> "Pohledy do historie"
+    _ -> s

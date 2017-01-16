@@ -58,7 +58,7 @@ renderFilter articles settings f =
         noFilterPlaceholder = "bez omezení"
         currentValue = Dict.get f.name settings
         possibleValues = unique (List.filterMap f.selector articles)
-        valueOptions = List.map (\x -> option [] [text x]) possibleValues
+        valueOptions = List.map (\x -> option [value x] [text (f.valueDecorator x)]) possibleValues
         noFilterOption = option [selected (currentValue == Nothing)] [text noFilterPlaceholder]
         action tag = if (tag == noFilterPlaceholder)
             then UpdateFilterValue f Nothing
