@@ -11957,7 +11957,7 @@ var _Ohlasy$archiv$Views$renderResultStats = F2(
 			_elm_lang$html$Html$div,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('resultStats'),
+				_0: _elm_lang$html$Html_Attributes$class('status'),
 				_1: {ctor: '[]'}
 			},
 			{
@@ -11980,10 +11980,32 @@ var _Ohlasy$archiv$Views$rootView = function (model) {
 	var _p3 = model;
 	switch (_p3.ctor) {
 		case 'Loading':
-			return _elm_lang$html$Html$text('Načítám…');
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('status'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Načítám…'),
+					_1: {ctor: '[]'}
+				});
 		case 'Failed':
-			return _elm_lang$html$Html$text(
-				A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p3._0));
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('status'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p3._0)),
+					_1: {ctor: '[]'}
+				});
 		default:
 			var _p6 = _p3._2;
 			var _p5 = _p3._1;

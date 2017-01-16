@@ -14,9 +14,9 @@ rootView : Model -> Html Msg
 rootView model =
     case model of
         Loading ->
-            text "Načítám…"
+            div [class "status"] [text "Načítám…"]
         Failed e ->
-            text ("Chyba: " ++ e)
+            div [class "status"] [text ("Chyba: " ++ e)]
         Displaying articles filters settings ->
             let filteredArticles = applyFilters articles filters settings
             in div [] [
@@ -32,7 +32,7 @@ renderResultStats filtered all =
     let filterCount = List.length filtered
         allCount = List.length all
     in
-        div [class "resultStats"] [
+        div [class "status"] [
             text ("nalezených článků: " ++ (toString filterCount) ++ "/" ++ (toString allCount))
         ]
 
