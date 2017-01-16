@@ -5,7 +5,7 @@ import Filter exposing (..)
 
 import Http exposing (send, encodeUri)
 import Json.Decode exposing (decodeString)
-import Navigation exposing (openURL)
+import Location exposing (openURL)
 import Dict exposing (Dict)
 
 -- TYPES
