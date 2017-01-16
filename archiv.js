@@ -7253,61 +7253,16 @@ var _Ohlasy$archiv$Article$articleDecoder = A3(
 								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_Ohlasy$archiv$Article$Article)))))))));
 var _Ohlasy$archiv$Article$articleListDecoder = _elm_lang$core$Json_Decode$list(_Ohlasy$archiv$Article$articleDecoder);
 
-var _Ohlasy$archiv$Filter$defaultFilters = {
-	ctor: '::',
-	_0: {
-		name: 'Autor',
-		selector: function (_p0) {
-			return _elm_lang$core$Maybe$Just(
-				function (_) {
-					return _.author;
-				}(_p0));
-		}
-	},
-	_1: {
-		ctor: '::',
-		_0: {
-			name: 'Rubrika',
-			selector: function (_) {
-				return _.category;
-			}
-		},
-		_1: {
-			ctor: '::',
-			_0: {
-				name: 'Seriál',
-				selector: function (_) {
-					return _.serialID;
-				}
-			},
-			_1: {
-				ctor: '::',
-				_0: {
-					name: 'Rok',
-					selector: function (_p1) {
-						return _elm_lang$core$Maybe$Just(
-							_elm_lang$core$Basics$toString(
-								_elm_lang$core$Date$year(
-									function (_) {
-										return _.pubDate;
-									}(_p1))));
-					}
-				},
-				_1: {ctor: '[]'}
-			}
-		}
-	}
-};
 var _Ohlasy$archiv$Filter$filterArticles = F3(
 	function (articles, f, env) {
-		var _p2 = A2(_elm_lang$core$Dict$get, f.name, env);
-		if (_p2.ctor === 'Just') {
+		var _p0 = A2(_elm_lang$core$Dict$get, f.name, env);
+		if (_p0.ctor === 'Just') {
 			return A2(
 				_elm_lang$core$List$filter,
 				function (a) {
-					var _p3 = f.selector(a);
-					if (_p3.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(_p3._0, _p2._0);
+					var _p1 = f.selector(a);
+					if (_p1.ctor === 'Just') {
+						return _elm_lang$core$Native_Utils.eq(_p1._0, _p0._0);
 					} else {
 						return false;
 					}
@@ -7317,10 +7272,59 @@ var _Ohlasy$archiv$Filter$filterArticles = F3(
 			return articles;
 		}
 	});
-var _Ohlasy$archiv$Filter$Filter = F2(
-	function (a, b) {
-		return {name: a, selector: b};
+var _Ohlasy$archiv$Filter$Filter = F3(
+	function (a, b, c) {
+		return {name: a, selector: b, valueDecorator: c};
 	});
+var _Ohlasy$archiv$Filter$defaultFilters = {
+	ctor: '::',
+	_0: A3(
+		_Ohlasy$archiv$Filter$Filter,
+		'Autor',
+		function (_p2) {
+			return _elm_lang$core$Maybe$Just(
+				function (_) {
+					return _.author;
+				}(_p2));
+		},
+		_elm_lang$core$Basics$identity),
+	_1: {
+		ctor: '::',
+		_0: A3(
+			_Ohlasy$archiv$Filter$Filter,
+			'Rubrika',
+			function (_) {
+				return _.category;
+			},
+			_elm_lang$core$Basics$identity),
+		_1: {
+			ctor: '::',
+			_0: A3(
+				_Ohlasy$archiv$Filter$Filter,
+				'Seriál',
+				function (_) {
+					return _.serialID;
+				},
+				_elm_lang$core$Basics$identity),
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_Ohlasy$archiv$Filter$Filter,
+					'Rok',
+					function (_p3) {
+						return _elm_lang$core$Maybe$Just(
+							_elm_lang$core$Basics$toString(
+								_elm_lang$core$Date$year(
+									function (_) {
+										return _.pubDate;
+									}(_p3))));
+					},
+					_elm_lang$core$Basics$identity),
+				_1: {ctor: '[]'}
+			}
+		}
+	}
+};
 
 var _elm_lang$http$Native_Http = function() {
 

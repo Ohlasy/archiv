@@ -22,8 +22,8 @@ filterArticles articles f env =
 
 defaultFilters : List Filter
 defaultFilters = [
-    { name = "Autor", selector = (Just << .author) },
-    { name = "Rubrika", selector = .category },
-    { name = "Seriál", selector = .serialID },
-    { name = "Rok", selector = (Just << toString << Date.year << .pubDate) }
+    Filter "Autor" (Just << .author),
+    Filter "Rubrika" .category,
+    Filter "Seriál" .serialID,
+    Filter "Rok" (Just << toString << Date.year << .pubDate)
     ]
