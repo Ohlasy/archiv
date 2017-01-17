@@ -6704,6 +6704,13 @@ var _elm_community$string_extra$String_Extra$rightOf = F2(
 							'(.*)$')),
 					string)));
 	});
+var _elm_community$string_extra$String_Extra$pluralize = F3(
+	function (singular, plural, count) {
+		return _elm_lang$core$Native_Utils.eq(count, 1) ? A2(_elm_lang$core$Basics_ops['++'], '1 ', singular) : A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(count),
+			A2(_elm_lang$core$Basics_ops['++'], ' ', plural));
+	});
 var _elm_community$string_extra$String_Extra$stripTags = function (string) {
 	return A4(
 		_elm_lang$core$Regex$replace,
@@ -7274,7 +7281,7 @@ var _Ohlasy$archiv$Filter$serialDecorator = function (s) {
 };
 var _Ohlasy$archiv$Filter$filterArticles = F3(
 	function (articles, f, env) {
-		var _p1 = A2(_elm_lang$core$Dict$get, f.name, env);
+		var _p1 = A2(_elm_lang$core$Dict$get, f.slug, env);
 		if (_p1.ctor === 'Just') {
 			return A2(
 				_elm_lang$core$List$filter,
@@ -7291,15 +7298,16 @@ var _Ohlasy$archiv$Filter$filterArticles = F3(
 			return articles;
 		}
 	});
-var _Ohlasy$archiv$Filter$Filter = F3(
-	function (a, b, c) {
-		return {name: a, selector: b, valueDecorator: c};
+var _Ohlasy$archiv$Filter$Filter = F4(
+	function (a, b, c, d) {
+		return {name: a, slug: b, selector: c, valueDecorator: d};
 	});
 var _Ohlasy$archiv$Filter$defaultFilters = {
 	ctor: '::',
-	_0: A3(
+	_0: A4(
 		_Ohlasy$archiv$Filter$Filter,
 		'Autor',
+		'autor',
 		function (_p3) {
 			return _elm_lang$core$Maybe$Just(
 				function (_) {
@@ -7309,27 +7317,30 @@ var _Ohlasy$archiv$Filter$defaultFilters = {
 		_elm_lang$core$Basics$identity),
 	_1: {
 		ctor: '::',
-		_0: A3(
+		_0: A4(
 			_Ohlasy$archiv$Filter$Filter,
 			'Rubrika',
+			'rubrika',
 			function (_) {
 				return _.category;
 			},
 			_elm_lang$core$Basics$identity),
 		_1: {
 			ctor: '::',
-			_0: A3(
+			_0: A4(
 				_Ohlasy$archiv$Filter$Filter,
 				'Seriál',
+				'serial',
 				function (_) {
 					return _.serialID;
 				},
 				_Ohlasy$archiv$Filter$serialDecorator),
 			_1: {
 				ctor: '::',
-				_0: A3(
+				_0: A4(
 					_Ohlasy$archiv$Filter$Filter,
 					'Rok',
+					'rok',
 					function (_p4) {
 						return _elm_lang$core$Maybe$Just(
 							_elm_lang$core$Basics$toString(
@@ -7344,6 +7355,12 @@ var _Ohlasy$archiv$Filter$defaultFilters = {
 		}
 	}
 };
+
+var _Ohlasy$archiv$Location$openURL = _elm_lang$core$Native_Platform.outgoingPort(
+	'openURL',
+	function (v) {
+		return v;
+	});
 
 var _elm_lang$http$Native_Http = function() {
 
@@ -7706,164 +7723,282 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
-var _Ohlasy$archiv$Navigation$openURL = _elm_lang$core$Native_Platform.outgoingPort(
-	'openURL',
-	function (v) {
-		return v;
-	});
-
-var _Ohlasy$archiv$State$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$none;
+var _Ohlasy$archiv$URLParsing$decodePair = function (_p0) {
+	var _p1 = _p0;
+	var _p2 = _elm_lang$http$Http$decodeUri(_p1._0);
+	if (_p2.ctor === 'Just') {
+		var _p3 = _elm_lang$http$Http$decodeUri(_p1._1);
+		if (_p3.ctor === 'Just') {
+			return _elm_lang$core$Maybe$Just(
+				{ctor: '_Tuple2', _0: _p2._0, _1: _p3._0});
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
 };
-var _Ohlasy$archiv$State$downloadArticles = _elm_lang$http$Http$getString('http://www.ohlasy.info/api/articles.js');
-var _Ohlasy$archiv$State$DisplayState = F4(
-	function (a, b, c, d) {
-		return {articles: a, filters: b, settings: c, searchQuery: d};
-	});
-var _Ohlasy$archiv$State$Failed = function (a) {
-	return {ctor: 'Failed', _0: a};
-};
-var _Ohlasy$archiv$State$Displaying = function (a) {
-	return {ctor: 'Displaying', _0: a};
-};
-var _Ohlasy$archiv$State$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'ParseArticles':
-				var _p1 = _p0._0;
-				if (_p1.ctor === 'Ok') {
-					var _p2 = A2(_elm_lang$core$Json_Decode$decodeString, _Ohlasy$archiv$Article$articleListDecoder, _p1._0);
-					if (_p2.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: _Ohlasy$archiv$State$Displaying(
-								A4(_Ohlasy$archiv$State$DisplayState, _p2._0, _Ohlasy$archiv$Filter$defaultFilters, _elm_lang$core$Dict$empty, '')),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						return {
-							ctor: '_Tuple2',
-							_0: _Ohlasy$archiv$State$Failed(
-								_elm_lang$core$Basics$toString(_p2._0)),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					}
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed(
-							_elm_lang$core$Basics$toString(_p1._0)),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'UpdateFilterValue':
-				var _p6 = _p0._0;
-				var _p3 = model;
-				if (_p3.ctor === 'Displaying') {
-					var _p5 = _p3._0;
-					var updatedSettings = function () {
-						var _p4 = _p0._1;
-						if (_p4.ctor === 'Just') {
-							return A3(_elm_lang$core$Dict$insert, _p6.name, _p4._0, _p5.settings);
-						} else {
-							return A2(_elm_lang$core$Dict$remove, _p6.name, _p5.settings);
-						}
-					}();
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Displaying(
-							_elm_lang$core$Native_Utils.update(
-								_p5,
-								{settings: updatedSettings})),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'RemoveAllFilters':
-				var _p7 = model;
-				if (_p7.ctor === 'Displaying') {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Displaying(
-							_elm_lang$core$Native_Utils.update(
-								_p7._0,
-								{settings: _elm_lang$core$Dict$empty})),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'UpdateSearchQuery':
-				var _p8 = model;
-				if (_p8.ctor === 'Displaying') {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Displaying(
-							_elm_lang$core$Native_Utils.update(
-								_p8._0,
-								{searchQuery: _p0._0})),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			default:
-				var _p9 = model;
-				if (_p9.ctor === 'Displaying') {
-					var query = A2(_elm_lang$core$Basics_ops['++'], _p9._0.searchQuery, ' site:ohlasy.info');
-					var targetURL = A2(
-						_elm_lang$core$Basics_ops['++'],
-						'http://www.google.cz/search?q=',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$http$Http$encodeUri(query),
-							'&sa=Hledej'));
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: _Ohlasy$archiv$Navigation$openURL(targetURL)
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
+var _Ohlasy$archiv$URLParsing$firstOccurrence = F2(
+	function (c, s) {
+		var _p4 = A2(
+			_elm_lang$core$String$indexes,
+			_elm_lang$core$String$fromChar(c),
+			s);
+		if (_p4.ctor === '[]') {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			return _elm_lang$core$Maybe$Just(_p4._0);
 		}
 	});
-var _Ohlasy$archiv$State$Loading = {ctor: 'Loading'};
-var _Ohlasy$archiv$State$RemoveAllFilters = {ctor: 'RemoveAllFilters'};
-var _Ohlasy$archiv$State$SubmitSearch = {ctor: 'SubmitSearch'};
-var _Ohlasy$archiv$State$UpdateSearchQuery = function (a) {
-	return {ctor: 'UpdateSearchQuery', _0: a};
-};
-var _Ohlasy$archiv$State$UpdateFilterValue = F2(
-	function (a, b) {
-		return {ctor: 'UpdateFilterValue', _0: a, _1: b};
+var _Ohlasy$archiv$URLParsing$splitAtFirst = F2(
+	function (c, s) {
+		var _p5 = A2(_Ohlasy$archiv$URLParsing$firstOccurrence, c, s);
+		if (_p5.ctor === 'Nothing') {
+			return {ctor: '_Tuple2', _0: s, _1: ''};
+		} else {
+			var _p6 = _p5._0;
+			return {
+				ctor: '_Tuple2',
+				_0: A2(_elm_lang$core$String$left, _p6, s),
+				_1: A2(_elm_lang$core$String$dropLeft, _p6 + 1, s)
+			};
+		}
 	});
-var _Ohlasy$archiv$State$ParseArticles = function (a) {
-	return {ctor: 'ParseArticles', _0: a};
+var _Ohlasy$archiv$URLParsing$decodeParams = function (stringWithAmpersands) {
+	var eachParam = A2(_elm_lang$core$String$split, '&', stringWithAmpersands);
+	var eachPair = A2(
+		_elm_lang$core$List$map,
+		_Ohlasy$archiv$URLParsing$splitAtFirst(
+			_elm_lang$core$Native_Utils.chr('=')),
+		eachParam);
+	var decodedPairs = A2(_elm_lang$core$List$filterMap, _Ohlasy$archiv$URLParsing$decodePair, eachPair);
+	return _elm_lang$core$Dict$fromList(decodedPairs);
 };
-var _Ohlasy$archiv$State$init = {
-	ctor: '_Tuple2',
-	_0: _Ohlasy$archiv$State$Loading,
-	_1: A2(_elm_lang$http$Http$send, _Ohlasy$archiv$State$ParseArticles, _Ohlasy$archiv$State$downloadArticles)
+var _Ohlasy$archiv$URLParsing$decodeHashString = function (startsWithHashMarkThenParams) {
+	var _p7 = _elm_lang$core$String$uncons(startsWithHashMarkThenParams);
+	if (_p7.ctor === 'Just') {
+		if ((_p7._0.ctor === '_Tuple2') && (_p7._0._0.valueOf() === '#')) {
+			return _elm_lang$core$Maybe$Just(
+				_Ohlasy$archiv$URLParsing$decodeParams(_p7._0._1));
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
 };
+var _Ohlasy$archiv$URLParsing$decodeHashStringOrEmpty = function (s) {
+	var _p8 = _Ohlasy$archiv$URLParsing$decodeHashString(s);
+	if (_p8.ctor === 'Just') {
+		return _p8._0;
+	} else {
+		return _elm_lang$core$Dict$empty;
+	}
+};
+var _Ohlasy$archiv$URLParsing$encodeHashString = function (d) {
+	var encodePair = function (_p9) {
+		var _p10 = _p9;
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$http$Http$encodeUri(_p10._0),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'=',
+				_elm_lang$http$Http$encodeUri(_p10._1)));
+	};
+	var encodedPairs = A2(
+		_elm_lang$core$List$map,
+		encodePair,
+		_elm_lang$core$Dict$toList(d));
+	var encodedHash = A2(_elm_lang$core$String$join, '&', encodedPairs);
+	return A2(_elm_lang$core$Basics_ops['++'], '#', encodedHash);
+};
+
+var _elm_lang$dom$Native_Dom = function() {
+
+var fakeNode = {
+	addEventListener: function() {},
+	removeEventListener: function() {}
+};
+
+var onDocument = on(typeof document !== 'undefined' ? document : fakeNode);
+var onWindow = on(typeof window !== 'undefined' ? window : fakeNode);
+
+function on(node)
+{
+	return function(eventName, decoder, toTask)
+	{
+		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
+
+			function performTask(event)
+			{
+				var result = A2(_elm_lang$core$Json_Decode$decodeValue, decoder, event);
+				if (result.ctor === 'Ok')
+				{
+					_elm_lang$core$Native_Scheduler.rawSpawn(toTask(result._0));
+				}
+			}
+
+			node.addEventListener(eventName, performTask);
+
+			return function()
+			{
+				node.removeEventListener(eventName, performTask);
+			};
+		});
+	};
+}
+
+var rAF = typeof requestAnimationFrame !== 'undefined'
+	? requestAnimationFrame
+	: function(callback) { callback(); };
+
+function withNode(id, doStuff)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		rAF(function()
+		{
+			var node = document.getElementById(id);
+			if (node === null)
+			{
+				callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'NotFound', _0: id }));
+				return;
+			}
+			callback(_elm_lang$core$Native_Scheduler.succeed(doStuff(node)));
+		});
+	});
+}
+
+
+// FOCUS
+
+function focus(id)
+{
+	return withNode(id, function(node) {
+		node.focus();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function blur(id)
+{
+	return withNode(id, function(node) {
+		node.blur();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SCROLLING
+
+function getScrollTop(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollTop;
+	});
+}
+
+function setScrollTop(id, desiredScrollTop)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = desiredScrollTop;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toBottom(id)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = node.scrollHeight;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function getScrollLeft(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollLeft;
+	});
+}
+
+function setScrollLeft(id, desiredScrollLeft)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = desiredScrollLeft;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toRight(id)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = node.scrollWidth;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SIZE
+
+function width(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollWidth;
+			case 'VisibleContent':
+				return node.clientWidth;
+			case 'VisibleContentWithBorders':
+				return node.offsetWidth;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.right - rect.left;
+		}
+	});
+}
+
+function height(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollHeight;
+			case 'VisibleContent':
+				return node.clientHeight;
+			case 'VisibleContentWithBorders':
+				return node.offsetHeight;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.bottom - rect.top;
+		}
+	});
+}
+
+return {
+	onDocument: F3(onDocument),
+	onWindow: F3(onWindow),
+
+	focus: focus,
+	blur: blur,
+
+	getScrollTop: getScrollTop,
+	setScrollTop: F2(setScrollTop),
+	getScrollLeft: getScrollLeft,
+	setScrollLeft: F2(setScrollLeft),
+	toBottom: toBottom,
+	toRight: toRight,
+
+	height: F2(height),
+	width: F2(width)
+};
+
+}();
+
+var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
+var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
 
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrap;
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrapWithFlags;
@@ -9903,6 +10038,488 @@ var _elm_lang$html$Html$summary = _elm_lang$html$Html$node('summary');
 var _elm_lang$html$Html$menuitem = _elm_lang$html$Html$node('menuitem');
 var _elm_lang$html$Html$menu = _elm_lang$html$Html$node('menu');
 
+var _elm_lang$navigation$Native_Navigation = function() {
+
+function go(n)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		if (n !== 0)
+		{
+			history.go(n);
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+function pushState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.pushState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+function replaceState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.replaceState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+function getLocation()
+{
+	var location = document.location;
+
+	return {
+		href: location.href,
+		host: location.host,
+		hostname: location.hostname,
+		protocol: location.protocol,
+		origin: location.origin,
+		port_: location.port,
+		pathname: location.pathname,
+		search: location.search,
+		hash: location.hash,
+		username: location.username,
+		password: location.password
+	};
+}
+
+
+return {
+	go: go,
+	pushState: pushState,
+	replaceState: replaceState,
+	getLocation: getLocation
+};
+
+}();
+
+var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
+var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
+var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
+var _elm_lang$navigation$Navigation$replaceState = _elm_lang$navigation$Native_Navigation.replaceState;
+var _elm_lang$navigation$Navigation$pushState = _elm_lang$navigation$Native_Navigation.pushState;
+var _elm_lang$navigation$Navigation$go = _elm_lang$navigation$Native_Navigation.go;
+var _elm_lang$navigation$Navigation$spawnPopState = function (router) {
+	return _elm_lang$core$Process$spawn(
+		A3(
+			_elm_lang$dom$Dom_LowLevel$onWindow,
+			'popstate',
+			_elm_lang$core$Json_Decode$value,
+			function (_p0) {
+				return A2(
+					_elm_lang$core$Platform$sendToSelf,
+					router,
+					_elm_lang$navigation$Native_Navigation.getLocation(
+						{ctor: '_Tuple0'}));
+			}));
+};
+var _elm_lang$navigation$Navigation_ops = _elm_lang$navigation$Navigation_ops || {};
+_elm_lang$navigation$Navigation_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p1) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$navigation$Navigation$notify = F3(
+	function (router, subs, location) {
+		var send = function (_p2) {
+			var _p3 = _p2;
+			return A2(
+				_elm_lang$core$Platform$sendToApp,
+				router,
+				_p3._0(location));
+		};
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(_elm_lang$core$List$map, send, subs)),
+			_elm_lang$core$Task$succeed(
+				{ctor: '_Tuple0'}));
+	});
+var _elm_lang$navigation$Navigation$onSelfMsg = F3(
+	function (router, location, state) {
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			A3(_elm_lang$navigation$Navigation$notify, router, state.subs, location),
+			_elm_lang$core$Task$succeed(state));
+	});
+var _elm_lang$navigation$Navigation$cmdHelp = F3(
+	function (router, subs, cmd) {
+		var _p4 = cmd;
+		switch (_p4.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$go(_p4._0);
+			case 'New':
+				return A2(
+					_elm_lang$core$Task$andThen,
+					A2(_elm_lang$navigation$Navigation$notify, router, subs),
+					_elm_lang$navigation$Navigation$pushState(_p4._0));
+			default:
+				return A2(
+					_elm_lang$core$Task$andThen,
+					A2(_elm_lang$navigation$Navigation$notify, router, subs),
+					_elm_lang$navigation$Navigation$replaceState(_p4._0));
+		}
+	});
+var _elm_lang$navigation$Navigation$subscription = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$command = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$Location = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return {href: a, host: b, hostname: c, protocol: d, origin: e, port_: f, pathname: g, search: h, hash: i, username: j, password: k};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _elm_lang$navigation$Navigation$State = F2(
+	function (a, b) {
+		return {subs: a, process: b};
+	});
+var _elm_lang$navigation$Navigation$init = _elm_lang$core$Task$succeed(
+	A2(
+		_elm_lang$navigation$Navigation$State,
+		{ctor: '[]'},
+		_elm_lang$core$Maybe$Nothing));
+var _elm_lang$navigation$Navigation$onEffects = F4(
+	function (router, cmds, subs, _p5) {
+		var _p6 = _p5;
+		var _p9 = _p6.process;
+		var stepState = function () {
+			var _p7 = {ctor: '_Tuple2', _0: subs, _1: _p9};
+			_v3_2:
+			do {
+				if (_p7._0.ctor === '[]') {
+					if (_p7._1.ctor === 'Just') {
+						return A2(
+							_elm_lang$navigation$Navigation_ops['&>'],
+							_elm_lang$core$Process$kill(_p7._1._0),
+							_elm_lang$core$Task$succeed(
+								A2(_elm_lang$navigation$Navigation$State, subs, _elm_lang$core$Maybe$Nothing)));
+					} else {
+						break _v3_2;
+					}
+				} else {
+					if (_p7._1.ctor === 'Nothing') {
+						return A2(
+							_elm_lang$core$Task$map,
+							function (_p8) {
+								return A2(
+									_elm_lang$navigation$Navigation$State,
+									subs,
+									_elm_lang$core$Maybe$Just(_p8));
+							},
+							_elm_lang$navigation$Navigation$spawnPopState(router));
+					} else {
+						break _v3_2;
+					}
+				}
+			} while(false);
+			return _elm_lang$core$Task$succeed(
+				A2(_elm_lang$navigation$Navigation$State, subs, _p9));
+		}();
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					A2(_elm_lang$navigation$Navigation$cmdHelp, router, subs),
+					cmds)),
+			stepState);
+	});
+var _elm_lang$navigation$Navigation$Modify = function (a) {
+	return {ctor: 'Modify', _0: a};
+};
+var _elm_lang$navigation$Navigation$modifyUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Modify(url));
+};
+var _elm_lang$navigation$Navigation$New = function (a) {
+	return {ctor: 'New', _0: a};
+};
+var _elm_lang$navigation$Navigation$newUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$New(url));
+};
+var _elm_lang$navigation$Navigation$Jump = function (a) {
+	return {ctor: 'Jump', _0: a};
+};
+var _elm_lang$navigation$Navigation$back = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(0 - n));
+};
+var _elm_lang$navigation$Navigation$forward = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(n));
+};
+var _elm_lang$navigation$Navigation$cmdMap = F2(
+	function (_p10, myCmd) {
+		var _p11 = myCmd;
+		switch (_p11.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$Jump(_p11._0);
+			case 'New':
+				return _elm_lang$navigation$Navigation$New(_p11._0);
+			default:
+				return _elm_lang$navigation$Navigation$Modify(_p11._0);
+		}
+	});
+var _elm_lang$navigation$Navigation$Monitor = function (a) {
+	return {ctor: 'Monitor', _0: a};
+};
+var _elm_lang$navigation$Navigation$program = F2(
+	function (locationToMessage, stuff) {
+		var init = stuff.init(
+			_elm_lang$navigation$Native_Navigation.getLocation(
+				{ctor: '_Tuple0'}));
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
+				{
+					ctor: '::',
+					_0: _elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(locationToMessage)),
+					_1: {
+						ctor: '::',
+						_0: stuff.subscriptions(model),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		return _elm_lang$html$Html$program(
+			{init: init, view: stuff.view, update: stuff.update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$programWithFlags = F2(
+	function (locationToMessage, stuff) {
+		var init = function (flags) {
+			return A2(
+				stuff.init,
+				flags,
+				_elm_lang$navigation$Native_Navigation.getLocation(
+					{ctor: '_Tuple0'}));
+		};
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
+				{
+					ctor: '::',
+					_0: _elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(locationToMessage)),
+					_1: {
+						ctor: '::',
+						_0: stuff.subscriptions(model),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		return _elm_lang$html$Html$programWithFlags(
+			{init: init, view: stuff.view, update: stuff.update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$subMap = F2(
+	function (func, _p12) {
+		var _p13 = _p12;
+		return _elm_lang$navigation$Navigation$Monitor(
+			function (_p14) {
+				return func(
+					_p13._0(_p14));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Navigation'] = {pkg: 'elm-lang/navigation', init: _elm_lang$navigation$Navigation$init, onEffects: _elm_lang$navigation$Navigation$onEffects, onSelfMsg: _elm_lang$navigation$Navigation$onSelfMsg, tag: 'fx', cmdMap: _elm_lang$navigation$Navigation$cmdMap, subMap: _elm_lang$navigation$Navigation$subMap};
+
+var _Ohlasy$archiv$State$downloadArticles = _elm_lang$http$Http$getString('http://www.ohlasy.info/api/articles.js');
+var _Ohlasy$archiv$State$DisplayState = F4(
+	function (a, b, c, d) {
+		return {articles: a, filters: b, settings: c, searchQuery: d};
+	});
+var _Ohlasy$archiv$State$Failed = function (a) {
+	return {ctor: 'Failed', _0: a};
+};
+var _Ohlasy$archiv$State$Displaying = function (a) {
+	return {ctor: 'Displaying', _0: a};
+};
+var _Ohlasy$archiv$State$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'ParseArticles':
+				var _p1 = model;
+				if (_p1.ctor === 'Loading') {
+					var _p2 = _p0._0;
+					if (_p2.ctor === 'Ok') {
+						var _p3 = A2(_elm_lang$core$Json_Decode$decodeString, _Ohlasy$archiv$Article$articleListDecoder, _p2._0);
+						if (_p3.ctor === 'Ok') {
+							return {
+								ctor: '_Tuple2',
+								_0: _Ohlasy$archiv$State$Displaying(
+									A4(_Ohlasy$archiv$State$DisplayState, _p3._0, _Ohlasy$archiv$Filter$defaultFilters, _p1._0, '')),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						} else {
+							return {
+								ctor: '_Tuple2',
+								_0: _Ohlasy$archiv$State$Failed(
+									_elm_lang$core$Basics$toString(_p3._0)),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						}
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _Ohlasy$archiv$State$Failed(
+								_elm_lang$core$Basics$toString(_p2._0)),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'UpdateFilterValue':
+				var _p7 = _p0._0;
+				var _p4 = model;
+				if (_p4.ctor === 'Displaying') {
+					var _p6 = _p4._0;
+					var newSettings = function () {
+						var _p5 = _p0._1;
+						if (_p5.ctor === 'Just') {
+							return A3(_elm_lang$core$Dict$insert, _p7.slug, _p5._0, _p6.settings);
+						} else {
+							return A2(_elm_lang$core$Dict$remove, _p7.slug, _p6.settings);
+						}
+					}();
+					var newHash = _Ohlasy$archiv$URLParsing$encodeHashString(newSettings);
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _elm_lang$navigation$Navigation$modifyUrl(newHash)
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'RemoveAllFilters':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _elm_lang$navigation$Navigation$modifyUrl('#')
+				};
+			case 'UpdateSearchQuery':
+				var _p8 = model;
+				if (_p8.ctor === 'Displaying') {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Displaying(
+							_elm_lang$core$Native_Utils.update(
+								_p8._0,
+								{searchQuery: _p0._0})),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'SubmitSearch':
+				var _p9 = model;
+				if (_p9.ctor === 'Displaying') {
+					var query = A2(_elm_lang$core$Basics_ops['++'], _p9._0.searchQuery, ' site:ohlasy.info');
+					var targetURL = A2(
+						_elm_lang$core$Basics_ops['++'],
+						'http://www.google.cz/search?q=',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$http$Http$encodeUri(query),
+							'&sa=Hledej'));
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _Ohlasy$archiv$Location$openURL(targetURL)
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				var _p10 = model;
+				if (_p10.ctor === 'Displaying') {
+					var newSettings = _Ohlasy$archiv$URLParsing$decodeHashStringOrEmpty(_p0._0.hash);
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Displaying(
+							_elm_lang$core$Native_Utils.update(
+								_p10._0,
+								{settings: newSettings})),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+		}
+	});
+var _Ohlasy$archiv$State$Loading = function (a) {
+	return {ctor: 'Loading', _0: a};
+};
+var _Ohlasy$archiv$State$RemoveAllFilters = {ctor: 'RemoveAllFilters'};
+var _Ohlasy$archiv$State$URLChange = function (a) {
+	return {ctor: 'URLChange', _0: a};
+};
+var _Ohlasy$archiv$State$SubmitSearch = {ctor: 'SubmitSearch'};
+var _Ohlasy$archiv$State$UpdateSearchQuery = function (a) {
+	return {ctor: 'UpdateSearchQuery', _0: a};
+};
+var _Ohlasy$archiv$State$UpdateFilterValue = F2(
+	function (a, b) {
+		return {ctor: 'UpdateFilterValue', _0: a, _1: b};
+	});
+var _Ohlasy$archiv$State$ParseArticles = function (a) {
+	return {ctor: 'ParseArticles', _0: a};
+};
+var _Ohlasy$archiv$State$init = function (location) {
+	var initialSettings = _Ohlasy$archiv$URLParsing$decodeHashStringOrEmpty(location.hash);
+	return {
+		ctor: '_Tuple2',
+		_0: _Ohlasy$archiv$State$Loading(initialSettings),
+		_1: A2(_elm_lang$http$Http$send, _Ohlasy$archiv$State$ParseArticles, _Ohlasy$archiv$State$downloadArticles)
+	};
+};
+
 var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
 var _elm_lang$html$Html_Events$targetChecked = A2(
 	_elm_lang$core$Json_Decode$at,
@@ -11886,6 +12503,7 @@ var _Ohlasy$archiv$Views$renderFilter = F3(
 	function (articles, settings, f) {
 		var possibleValues = _elm_community$list_extra$List_Extra$unique(
 			A2(_elm_lang$core$List$filterMap, f.selector, articles));
+		var currentValue = A2(_elm_lang$core$Dict$get, f.slug, settings);
 		var valueOptions = A2(
 			_elm_lang$core$List$map,
 			function (x) {
@@ -11894,7 +12512,14 @@ var _Ohlasy$archiv$Views$renderFilter = F3(
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$value(x),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$selected(
+								_elm_lang$core$Native_Utils.eq(
+									currentValue,
+									_elm_lang$core$Maybe$Just(x))),
+							_1: {ctor: '[]'}
+						}
 					},
 					{
 						ctor: '::',
@@ -11904,7 +12529,6 @@ var _Ohlasy$archiv$Views$renderFilter = F3(
 					});
 			},
 			possibleValues);
-		var currentValue = A2(_elm_lang$core$Dict$get, f.name, settings);
 		var noFilterPlaceholder = 'bez omezení';
 		var noFilterOption = A2(
 			_elm_lang$html$Html$option,
@@ -12154,8 +12778,17 @@ var _Ohlasy$archiv$Views$rootView = function (model) {
 	}
 };
 
-var _Ohlasy$archiv$Main$main = _elm_lang$html$Html$program(
-	{init: _Ohlasy$archiv$State$init, update: _Ohlasy$archiv$State$update, subscriptions: _Ohlasy$archiv$State$subscriptions, view: _Ohlasy$archiv$Views$rootView})();
+var _Ohlasy$archiv$Main$main = A2(
+	_elm_lang$navigation$Navigation$program,
+	_Ohlasy$archiv$State$URLChange,
+	{
+		init: _Ohlasy$archiv$State$init,
+		update: _Ohlasy$archiv$State$update,
+		subscriptions: function (_p0) {
+			return _elm_lang$core$Platform_Sub$none;
+		},
+		view: _Ohlasy$archiv$Views$rootView
+	})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};

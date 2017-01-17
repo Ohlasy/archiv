@@ -12,7 +12,7 @@ import Dict
 
 rootView : Model -> Html Msg
 rootView model = case model of
-    Loading ->
+    Loading _ ->
         div [class "status"] [text "Načítám…"]
     Failed e ->
         div [class "status"] [text ("Chyba: " ++ e)]
@@ -60,9 +60,9 @@ renderFilter : List Article -> FilterSettings -> Filter -> Html Msg
 renderFilter articles settings f =
     let
         noFilterPlaceholder = "bez omezení"
-        currentValue = Dict.get f.name settings
+        currentValue = Dict.get f.slug settings
         possibleValues = unique (List.filterMap f.selector articles)
-        valueOptions = List.map (\x -> option [value x] [text (f.valueDecorator x)]) possibleValues
+        valueOptions = List.map (\x -> option [value x, selected (currentValue == Just x)] [text (f.valueDecorator x)]) possibleValues
         noFilterOption = option [selected (currentValue == Nothing)] [text noFilterPlaceholder]
         action tag = if (tag == noFilterPlaceholder)
             then UpdateFilterValue f Nothing

@@ -1,12 +1,12 @@
 import State exposing (..)
 import Views exposing (..)
 import Html
+import Navigation
 
-main : Program Never Model Msg
 main =
-    Html.program {
+    Navigation.program URLChange {
         init = State.init,
         update = State.update,
-        subscriptions = State.subscriptions,
+        subscriptions = (\_ -> Sub.none),
         view = Views.rootView
         }
