@@ -10361,137 +10361,115 @@ var _Ohlasy$archiv$State$Displaying = function (a) {
 };
 var _Ohlasy$archiv$State$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'ParseArticles':
-				var _p1 = model;
-				if (_p1.ctor === 'Loading') {
-					var _p2 = _p0._0;
-					if (_p2.ctor === 'Ok') {
-						var _p3 = A2(_elm_lang$core$Json_Decode$decodeString, _Ohlasy$archiv$Article$articleListDecoder, _p2._0);
-						if (_p3.ctor === 'Ok') {
-							return {
-								ctor: '_Tuple2',
-								_0: _Ohlasy$archiv$State$Displaying(
-									A4(_Ohlasy$archiv$State$DisplayState, _p3._0, _Ohlasy$archiv$Filter$defaultFilters, _p1._0, '')),
-								_1: _elm_lang$core$Platform_Cmd$none
-							};
+		var _p0 = {ctor: '_Tuple2', _0: model, _1: msg};
+		_v0_6:
+		do {
+			if (_p0.ctor === '_Tuple2') {
+				switch (_p0._0.ctor) {
+					case 'Loading':
+						if (_p0._1.ctor === 'ParseArticles') {
+							var _p1 = _p0._1._0;
+							if (_p1.ctor === 'Ok') {
+								var _p2 = A2(_elm_lang$core$Json_Decode$decodeString, _Ohlasy$archiv$Article$articleListDecoder, _p1._0);
+								if (_p2.ctor === 'Ok') {
+									return {
+										ctor: '_Tuple2',
+										_0: _Ohlasy$archiv$State$Displaying(
+											A4(_Ohlasy$archiv$State$DisplayState, _p2._0, _Ohlasy$archiv$Filter$defaultFilters, _p0._0._0, '')),
+										_1: _elm_lang$core$Platform_Cmd$none
+									};
+								} else {
+									return {
+										ctor: '_Tuple2',
+										_0: _Ohlasy$archiv$State$Failed(
+											_elm_lang$core$Basics$toString(_p2._0)),
+										_1: _elm_lang$core$Platform_Cmd$none
+									};
+								}
+							} else {
+								return {
+									ctor: '_Tuple2',
+									_0: _Ohlasy$archiv$State$Failed(
+										_elm_lang$core$Basics$toString(_p1._0)),
+									_1: _elm_lang$core$Platform_Cmd$none
+								};
+							}
 						} else {
-							return {
-								ctor: '_Tuple2',
-								_0: _Ohlasy$archiv$State$Failed(
-									_elm_lang$core$Basics$toString(_p3._0)),
-								_1: _elm_lang$core$Platform_Cmd$none
-							};
+							break _v0_6;
 						}
-					} else {
-						return {
-							ctor: '_Tuple2',
-							_0: _Ohlasy$archiv$State$Failed(
-								_elm_lang$core$Basics$toString(_p2._0)),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					}
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'UpdateFilterValue':
-				var _p7 = _p0._0;
-				var _p4 = model;
-				if (_p4.ctor === 'Displaying') {
-					var _p6 = _p4._0;
-					var newSettings = function () {
-						var _p5 = _p0._1;
-						if (_p5.ctor === 'Just') {
-							return A3(_elm_lang$core$Dict$insert, _p7.slug, _p5._0, _p6.settings);
-						} else {
-							return A2(_elm_lang$core$Dict$remove, _p7.slug, _p6.settings);
+					case 'Displaying':
+						switch (_p0._1.ctor) {
+							case 'UpdateFilterValue':
+								var _p5 = _p0._0._0;
+								var _p4 = _p0._1._0;
+								var newSettings = function () {
+									var _p3 = _p0._1._1;
+									if (_p3.ctor === 'Just') {
+										return A3(_elm_lang$core$Dict$insert, _p4.slug, _p3._0, _p5.settings);
+									} else {
+										return A2(_elm_lang$core$Dict$remove, _p4.slug, _p5.settings);
+									}
+								}();
+								var newHash = _Ohlasy$archiv$URLParsing$encodeHashString(newSettings);
+								return {
+									ctor: '_Tuple2',
+									_0: model,
+									_1: _elm_lang$navigation$Navigation$modifyUrl(newHash)
+								};
+							case 'RemoveAllFilters':
+								return {
+									ctor: '_Tuple2',
+									_0: model,
+									_1: _elm_lang$navigation$Navigation$modifyUrl('#')
+								};
+							case 'UpdateSearchQuery':
+								return {
+									ctor: '_Tuple2',
+									_0: _Ohlasy$archiv$State$Displaying(
+										_elm_lang$core$Native_Utils.update(
+											_p0._0._0,
+											{searchQuery: _p0._1._0})),
+									_1: _elm_lang$core$Platform_Cmd$none
+								};
+							case 'SubmitSearch':
+								var query = A2(_elm_lang$core$Basics_ops['++'], _p0._0._0.searchQuery, ' site:ohlasy.info');
+								var targetURL = A2(
+									_elm_lang$core$Basics_ops['++'],
+									'http://www.google.cz/search?q=',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										_elm_lang$http$Http$encodeUri(query),
+										'&sa=Hledej'));
+								return {
+									ctor: '_Tuple2',
+									_0: model,
+									_1: _Ohlasy$archiv$Location$openURL(targetURL)
+								};
+							case 'URLChange':
+								var newSettings = _Ohlasy$archiv$URLParsing$decodeHashStringOrEmpty(_p0._1._0.hash);
+								return {
+									ctor: '_Tuple2',
+									_0: _Ohlasy$archiv$State$Displaying(
+										_elm_lang$core$Native_Utils.update(
+											_p0._0._0,
+											{settings: newSettings})),
+									_1: _elm_lang$core$Platform_Cmd$none
+								};
+							default:
+								break _v0_6;
 						}
-					}();
-					var newHash = _Ohlasy$archiv$URLParsing$encodeHashString(newSettings);
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: _elm_lang$navigation$Navigation$modifyUrl(newHash)
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					default:
+						break _v0_6;
 				}
-			case 'RemoveAllFilters':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _elm_lang$navigation$Navigation$modifyUrl('#')
-				};
-			case 'UpdateSearchQuery':
-				var _p8 = model;
-				if (_p8.ctor === 'Displaying') {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Displaying(
-							_elm_lang$core$Native_Utils.update(
-								_p8._0,
-								{searchQuery: _p0._0})),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'SubmitSearch':
-				var _p9 = model;
-				if (_p9.ctor === 'Displaying') {
-					var query = A2(_elm_lang$core$Basics_ops['++'], _p9._0.searchQuery, ' site:ohlasy.info');
-					var targetURL = A2(
-						_elm_lang$core$Basics_ops['++'],
-						'http://www.google.cz/search?q=',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$http$Http$encodeUri(query),
-							'&sa=Hledej'));
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: _Ohlasy$archiv$Location$openURL(targetURL)
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			default:
-				var _p10 = model;
-				if (_p10.ctor === 'Displaying') {
-					var newSettings = _Ohlasy$archiv$URLParsing$decodeHashStringOrEmpty(_p0._0.hash);
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Displaying(
-							_elm_lang$core$Native_Utils.update(
-								_p10._0,
-								{settings: newSettings})),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _Ohlasy$archiv$State$Failed('Invalid state'),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-		}
+			} else {
+				break _v0_6;
+			}
+		} while(false);
+		return {
+			ctor: '_Tuple2',
+			_0: _Ohlasy$archiv$State$Failed('Invalid state'),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
 	});
 var _Ohlasy$archiv$State$Loading = function (a) {
 	return {ctor: 'Loading', _0: a};
