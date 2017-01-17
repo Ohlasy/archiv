@@ -1,6 +1,5 @@
 import State exposing (..)
 import Views exposing (..)
-import Html
 import Navigation
 
 main =
@@ -9,4 +8,4 @@ main =
         update = State.update,
         subscriptions = (\_ -> Sub.none),
         view = Views.rootView
-        }
+    }

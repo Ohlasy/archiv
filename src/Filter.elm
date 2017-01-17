@@ -2,7 +2,7 @@ module Filter exposing (..)
 
 import Article exposing (Article)
 import Dict exposing (Dict)
-import Date exposing (Date)
+import Date
 
 type alias FilterSettings = Dict String String
 
