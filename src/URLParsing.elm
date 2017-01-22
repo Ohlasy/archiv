@@ -14,9 +14,7 @@ encodeHashString d =
 
 decodeHashStringOrEmpty : String -> Dict String String
 decodeHashStringOrEmpty s =
-    case decodeHashString s of
-        Just dict -> dict
-        Nothing -> Dict.empty
+    Maybe.withDefault Dict.empty (decodeHashString s)
 
 decodeHashString : String -> Maybe (Dict String String)
 decodeHashString startsWithHashMarkThenParams =

@@ -7788,23 +7788,21 @@ var _Ohlasy$archiv$URLParsing$decodeHashString = function (startsWithHashMarkThe
 	}
 };
 var _Ohlasy$archiv$URLParsing$decodeHashStringOrEmpty = function (s) {
-	var _p8 = _Ohlasy$archiv$URLParsing$decodeHashString(s);
-	if (_p8.ctor === 'Just') {
-		return _p8._0;
-	} else {
-		return _elm_lang$core$Dict$empty;
-	}
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		_elm_lang$core$Dict$empty,
+		_Ohlasy$archiv$URLParsing$decodeHashString(s));
 };
 var _Ohlasy$archiv$URLParsing$encodeHashString = function (d) {
-	var encodePair = function (_p9) {
-		var _p10 = _p9;
+	var encodePair = function (_p8) {
+		var _p9 = _p8;
 		return A2(
 			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$http$Http$encodeUri(_p10._0),
+			_elm_lang$http$Http$encodeUri(_p9._0),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				'=',
-				_elm_lang$http$Http$encodeUri(_p10._1)));
+				_elm_lang$http$Http$encodeUri(_p9._1)));
 	};
 	var encodedPairs = A2(
 		_elm_lang$core$List$map,
@@ -12342,14 +12340,7 @@ var _Ohlasy$archiv$Views$renderDate = function (date) {
 					s(y)))));
 };
 var _Ohlasy$archiv$Views$renderArticle = function (article) {
-	var perex = function () {
-		var _p1 = article.perex;
-		if (_p1.ctor === 'Just') {
-			return _p1._0;
-		} else {
-			return '';
-		}
-	}();
+	var perex = A2(_elm_lang$core$Maybe$withDefault, '', article.perex);
 	var absoluteURL = A2(_elm_lang$core$Basics_ops['++'], 'http://ohlasy.info', article.relativeURL);
 	return A2(
 		_elm_lang$html$Html$a,
@@ -12456,12 +12447,12 @@ var _Ohlasy$archiv$Views$renderArticle = function (article) {
 };
 var _Ohlasy$archiv$Views$applyFilters = F3(
 	function (articles, filters, env) {
-		var _p2 = filters;
-		if (_p2.ctor === '::') {
+		var _p1 = filters;
+		if (_p1.ctor === '::') {
 			return A3(
 				_Ohlasy$archiv$Filter$filterArticles,
-				A3(_Ohlasy$archiv$Views$applyFilters, articles, _p2._1, env),
-				_p2._0,
+				A3(_Ohlasy$archiv$Views$applyFilters, articles, _p1._1, env),
+				_p1._0,
 				env);
 		} else {
 			return articles;
@@ -12701,8 +12692,8 @@ var _Ohlasy$archiv$Views$renderResultStats = F2(
 			});
 	});
 var _Ohlasy$archiv$Views$rootView = function (model) {
-	var _p3 = model;
-	switch (_p3.ctor) {
+	var _p2 = model;
+	switch (_p2.ctor) {
 		case 'Loading':
 			return A2(
 				_elm_lang$html$Html$div,
@@ -12727,15 +12718,15 @@ var _Ohlasy$archiv$Views$rootView = function (model) {
 				{
 					ctor: '::',
 					_0: _elm_lang$html$Html$text(
-						A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p3._0)),
+						A2(_elm_lang$core$Basics_ops['++'], 'Chyba: ', _p2._0)),
 					_1: {ctor: '[]'}
 				});
 		default:
-			var _p4 = _p3._0;
-			var articles = _p4.articles;
-			var filters = _p4.filters;
-			var settings = _p4.settings;
-			var searchQuery = _p4.searchQuery;
+			var _p3 = _p2._0;
+			var articles = _p3.articles;
+			var filters = _p3.filters;
+			var settings = _p3.settings;
+			var searchQuery = _p3.searchQuery;
 			var filteredArticles = A3(_Ohlasy$archiv$Views$applyFilters, articles, filters, settings);
 			return A2(
 				_elm_lang$html$Html$div,

@@ -87,10 +87,9 @@ applyFilters articles filters env =
 
 renderArticle : Article -> Html Msg
 renderArticle article =
-    let absoluteURL = "http://ohlasy.info" ++ article.relativeURL
-        perex = case article.perex of
-            Just s -> s
-            Nothing -> ""
+    let
+        absoluteURL = "http://ohlasy.info" ++ article.relativeURL
+        perex = Maybe.withDefault "" article.perex
     in
         a [href absoluteURL] [
             div [class "article-wrapper"] [
