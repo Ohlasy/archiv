@@ -5,6 +5,6 @@ cache:
         - elm-stuff
 install:
     - npm install elm
-    - elm setup
+    - elm package install --yes
 script:
     - make
