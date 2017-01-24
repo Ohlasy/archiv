@@ -18,6 +18,3 @@ deploy:
     skip_cleanup: true
     local_dir: build
     acl: public_read
-    branch:
-        - master
-        - topic/build-improvements
