@@ -1,0 +1,10 @@
+sudo: false
+language: node_js
+cache:
+    directories:
+        - elm-stuff
+install:
+    - npm install elm
+    - elm setup
+script:
+    - make
