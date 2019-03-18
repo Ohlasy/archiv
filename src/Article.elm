@@ -1,20 +1,22 @@
 module Article exposing (Article, articleDecoder, articleListDecoder)
 
+import Date exposing (Date, fromString)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import Date exposing (Date, fromString)
 import String.Extra exposing (replace)
 
-type alias Article = {
-    relativeURL: String,
-    title: String,
-    author: String,
-    perex: Maybe String,
-    category: Maybe String,
-    coverPhotoURL: Maybe String,
-    serialID: Maybe String,
-    pubDate: Date
-}
+
+type alias Article =
+    { relativeURL : String
+    , title : String
+    , author : String
+    , perex : Maybe String
+    , category : Maybe String
+    , coverPhotoURL : Maybe String
+    , serialID : Maybe String
+    , pubDate : Date
+    }
+
 
 articleDecoder : Decoder Article
 articleDecoder =
@@ -28,16 +30,26 @@ articleDecoder =
         |> required "serial" (nullable string)
         |> required "pubDate" pubDateDecoder
 
+
 articleListDecoder : Decoder (List Article)
-articleListDecoder = list articleDecoder
+articleListDecoder =
+    list articleDecoder
+
 
 pubDateDecoder : Decoder Date
 pubDateDecoder =
-    string |> andThen (\s ->
-        case Date.fromString (convertDateToISO8601 s) of
-            Err e -> fail e
-            Ok d -> succeed d
-        )
+    string
+        |> andThen
+            (\s ->
+                case Date.fromString (convertDateToISO8601 s) of
+                    Err e ->
+                        fail e
+
+                    Ok d ->
+                        succeed d
+            )
+
 
 convertDateToISO8601 : String -> String
-convertDateToISO8601 = replace " " "T" << replace " +0000" ""
+convertDateToISO8601 =
+    replace " " "T" << replace " +0000" ""
