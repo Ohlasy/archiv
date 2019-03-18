@@ -3,6 +3,6 @@ all: app
 app:
 	mkdir -p build
 	cp -R img/ analytics.js index.html style.css build/
-	elm-make src/App.elm --output build/archiv.js
+	npx elm make src/App.elm --output build/archiv.js
 clean:
 	rm -rf build
