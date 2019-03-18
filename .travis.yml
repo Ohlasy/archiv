@@ -4,8 +4,8 @@ cache:
     directories:
         - elm-stuff
 install:
-    - npm install elm
-    - elm package install --yes
+    - npm install
+    - npx elm package install --yes
 script:
     - make
 deploy:
