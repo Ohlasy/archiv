@@ -141,7 +141,7 @@ renderArticle article =
                 [ h2 [] [ text article.title ]
                 , div [ class "metadata" ]
                     [ span [ class "author" ] [ text article.author ]
-                    , text " / "
+                    , text "\u{00A0}/\u{00A0}"
                     , span [ class "pubDate" ] [ text (renderDate article.pubDate) ]
                     ]
                 , p [ class "perex" ] [ text perex ]
