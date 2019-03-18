@@ -66,5 +66,8 @@ serialDecorator s =
         "historie" ->
             "Pohledy do historie"
 
+        "osmicky" ->
+            "Osmičková výročí"
+
         _ ->
             s
