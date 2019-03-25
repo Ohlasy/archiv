@@ -1,9 +1,9 @@
 module Article exposing (Article, articleDecoder, articleListDecoder)
 
-import Iso8601 exposing (toTime)
+import Iso8601
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import Time exposing (..)
+import Time
 
 
 type alias Article =
@@ -39,17 +39,21 @@ articleListDecoder =
 pubDateDecoder : Decoder Time.Posix
 pubDateDecoder =
     string
+        |> map preprocessTimestamp
+        |> map Iso8601.toTime
         |> andThen
             (\s ->
-                case toTime (patchTimestampFormat s) of
-                    Err _ ->
-                        fail "Error parsing ISO8601 timestamp"
-
+                case s of
                     Ok d ->
                         succeed d
+
+                    Err _ ->
+                        fail "Error parsing ISO8601 timestamp"
             )
 
 
-patchTimestampFormat : String -> String
-patchTimestampFormat =
-    String.replace " " "T" << String.replace " +0000" "Z"
+preprocessTimestamp : String -> String
+preprocessTimestamp str =
+    str
+        |> String.replace " +0000" "Z"
+        |> String.replace " " "T"
