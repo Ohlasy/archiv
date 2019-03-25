@@ -1,55 +1,34 @@
-module URLParsing exposing (decodeHashString, decodeHashStringOrEmpty, encodeHashString)
+module URLParsing exposing (decodeHashStringOrEmpty, encodeHashString)
 
 import Dict exposing (Dict)
-import Http exposing (decodeUri, encodeUri)
+import Url exposing (percentDecode, percentEncode)
 
 
 encodeHashString : Dict String String -> String
-encodeHashString d =
+encodeHashString dict =
     let
         encodePair ( key, val ) =
-            encodeUri key ++ "=" ++ encodeUri val
-
-        encodedPairs =
-            List.map encodePair (Dict.toList d)
-
-        encodedHash =
-            String.join "&" encodedPairs
+            percentEncode key ++ "=" ++ percentEncode val
     in
-    "#" ++ encodedHash
+    dict
+        |> Dict.toList
+        |> List.map encodePair
+        |> String.join "&"
 
 
 decodeHashStringOrEmpty : String -> Dict String String
-decodeHashStringOrEmpty s =
-    Maybe.withDefault Dict.empty (decodeHashString s)
-
-
-decodeHashString : String -> Maybe (Dict String String)
-decodeHashString startsWithHashMarkThenParams =
-    case String.uncons startsWithHashMarkThenParams of
-        Just ( '#', rest ) ->
-            Just (decodeParams rest)
-
-        Nothing ->
-            Nothing
-
-        _ ->
-            Nothing
+decodeHashStringOrEmpty =
+    decodeParams
 
 
 decodeParams : String -> Dict String String
-decodeParams stringWithAmpersands =
-    let
-        eachParam =
-            String.split "&" stringWithAmpersands
-
-        eachPair =
-            List.map (splitAtFirst '=') eachParam
-
-        decodedPairs =
-            List.filterMap decodePair eachPair
-    in
-    Dict.fromList decodedPairs
+decodeParams str =
+    str
+        |> String.split "&"
+        |> List.map (splitAtFirst '=')
+        |> List.filterMap decodePair
+        |> List.filter (\x -> x /= ( "", "" ))
+        |> Dict.fromList
 
 
 splitAtFirst : Char -> String -> ( String, String )
@@ -74,11 +53,11 @@ firstOccurrence c s =
 
 decodePair : ( String, String ) -> Maybe ( String, String )
 decodePair ( key, val ) =
-    case decodeUri key of
-        Just key ->
-            case decodeUri val of
-                Just val ->
-                    Just ( key, val )
+    case percentDecode key of
+        Just decodedKey ->
+            case percentDecode val of
+                Just decodedVal ->
+                    Just ( decodedKey, decodedVal )
 
                 Nothing ->
                     Nothing

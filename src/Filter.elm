@@ -1,8 +1,8 @@
 module Filter exposing (Filter, FilterSettings, defaultFilters, filterArticles, serialDecorator)
 
 import Article exposing (Article)
-import Date
 import Dict exposing (Dict)
+import Time
 
 
 type alias FilterSettings =
@@ -41,7 +41,7 @@ defaultFilters =
     [ Filter "Autor" "autor" (Just << .author) identity
     , Filter "Rubrika" "rubrika" .category identity
     , Filter "Seriál" "serial" .serialID serialDecorator
-    , Filter "Rok" "rok" (Just << toString << Date.year << .pubDate) identity
+    , Filter "Rok" "rok" (Just << String.fromInt << Time.toYear Time.utc << .pubDate) identity
     ]
 
 

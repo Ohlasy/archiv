@@ -1,14 +1,16 @@
 module Main exposing (main)
 
-import Navigation
-import State exposing (..)
-import Views exposing (..)
+import Browser
+import State
+import Views
 
 
 main =
-    Navigation.program URLChange
+    Browser.application
         { init = State.init
         , update = State.update
         , subscriptions = \_ -> Sub.none
         , view = Views.rootView
+        , onUrlChange = State.UrlChanged
+        , onUrlRequest = State.LinkClicked
         }

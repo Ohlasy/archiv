@@ -1,26 +1,28 @@
-module Views exposing (applyFilters, localizedMonthName, renderArticle, renderArticles, renderDate, renderFilter, renderFilterControls, renderResultStats, renderSidebar, rootView)
+module Views exposing (rootView)
 
 import Article exposing (..)
-import Date exposing (..)
+import Browser
 import Dict
 import Filter exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http exposing (Error)
 import List.Extra exposing (unique)
 import State exposing (..)
+import Time
 
 
-rootView : Model -> Html Msg
+rootView : Model -> Browser.Document Msg
 rootView model =
     case model of
-        Loading _ ->
-            div [ class "status" ] [ text "Načítám…" ]
+        Loading _ _ ->
+            buildPage <| div [ class "status" ] [ text "Načítám…" ]
 
         Failed e ->
-            div [ class "status" ] [ text ("Chyba: " ++ e) ]
+            buildPage <| div [ class "status" ] [ text ("Chyba: " ++ e) ]
 
-        Displaying state ->
+        Displaying _ state ->
             let
                 { articles, filters, settings, searchQuery } =
                     state
@@ -28,11 +30,27 @@ rootView model =
                 filteredArticles =
                     applyFilters articles filters settings
             in
-            div []
-                [ renderResultStats filteredArticles articles
-                , renderSidebar articles filters settings
-                , renderArticles filteredArticles
+            buildPage <|
+                div []
+                    [ renderResultStats filteredArticles articles
+                    , renderSidebar articles filters settings
+                    , renderArticles filteredArticles
+                    ]
+
+
+buildPage : Html Msg -> Browser.Document Msg
+buildPage content =
+    { title = "Archiv článků"
+    , body =
+        [ div [ class "header" ]
+            [ h1 []
+                [ text "Ohlasy\u{00A0}"
+                , small [] [ text "Archiv článků" ]
                 ]
+            ]
+        , content
+        ]
+    }
 
 
 
@@ -49,8 +67,27 @@ renderResultStats filtered all =
             List.length all
     in
     div [ class "status" ]
-        [ text ("nalezených článků: " ++ toString filterCount ++ "/" ++ toString allCount)
+        [ text ("nalezených článků: " ++ String.fromInt filterCount ++ "/" ++ String.fromInt allCount)
         ]
+
+
+httpErrorToString : Http.Error -> String
+httpErrorToString e =
+    case e of
+        Http.BadUrl _ ->
+            "Foo"
+
+        Http.Timeout ->
+            "Timeout"
+
+        Http.NetworkError ->
+            "Foo"
+
+        Http.BadStatus _ ->
+            "Foo"
+
+        Http.BadPayload _ _ ->
+            "Bar"
 
 
 
@@ -150,56 +187,59 @@ renderArticle article =
         ]
 
 
-renderDate : Date -> String
+renderDate : Time.Posix -> String
 renderDate date =
     let
+        tz =
+            Time.utc
+
         d =
-            Date.day date
+            Time.toDay tz date
 
         y =
-            Date.year date
+            Time.toYear tz date
 
         s =
-            toString
+            String.fromInt
     in
     s d ++ ". " ++ localizedMonthName date ++ " " ++ s y
 
 
-localizedMonthName : Date -> String
+localizedMonthName : Time.Posix -> String
 localizedMonthName d =
-    case Date.month d of
-        Jan ->
+    case Time.toMonth Time.utc d of
+        Time.Jan ->
             "ledna"
 
-        Feb ->
+        Time.Feb ->
             "února"
 
-        Mar ->
+        Time.Mar ->
             "března"
 
-        Apr ->
+        Time.Apr ->
             "dubna"
 
-        May ->
+        Time.May ->
             "května"
 
-        Jun ->
+        Time.Jun ->
             "června"
 
-        Jul ->
+        Time.Jul ->
             "července"
 
-        Aug ->
+        Time.Aug ->
             "srpna"
 
-        Sep ->
+        Time.Sep ->
             "září"
 
-        Oct ->
+        Time.Oct ->
             "října"
 
-        Nov ->
+        Time.Nov ->
             "listopadu"
 
-        Dec ->
+        Time.Dec ->
             "prosince"

@@ -1,9 +1,9 @@
 module Article exposing (Article, articleDecoder, articleListDecoder)
 
-import Date exposing (Date, fromString)
+import Iso8601 exposing (toTime)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import String.Extra exposing (replace)
+import Time exposing (..)
 
 
 type alias Article =
@@ -14,13 +14,13 @@ type alias Article =
     , category : Maybe String
     , coverPhotoURL : Maybe String
     , serialID : Maybe String
-    , pubDate : Date
+    , pubDate : Time.Posix
     }
 
 
 articleDecoder : Decoder Article
 articleDecoder =
-    decode Article
+    succeed Article
         |> required "relativeURL" string
         |> required "title" string
         |> required "author" string
@@ -36,20 +36,20 @@ articleListDecoder =
     list articleDecoder
 
 
-pubDateDecoder : Decoder Date
+pubDateDecoder : Decoder Time.Posix
 pubDateDecoder =
     string
         |> andThen
             (\s ->
-                case Date.fromString (convertDateToISO8601 s) of
-                    Err e ->
-                        fail e
+                case toTime (patchTimestampFormat s) of
+                    Err _ ->
+                        fail "Error parsing ISO8601 timestamp"
 
                     Ok d ->
                         succeed d
             )
 
 
-convertDateToISO8601 : String -> String
-convertDateToISO8601 =
-    replace " " "T" << replace " +0000" ""
+patchTimestampFormat : String -> String
+patchTimestampFormat =
+    String.replace " " "T" << String.replace " +0000" "Z"

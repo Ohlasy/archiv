@@ -15,15 +15,8 @@
     <meta property="og:image" content="http://i.imgur.com/ZgEeGAy.jpg">
 </head>
 <body>
-    <div class="header">
-        <h1>Ohlasy <small>Archiv článků</small></h1>
-    </div>
     <div id="main"></div>
     <script>
-        var rootNode = document.getElementById('main');
-        var app = Elm.Main.embed(rootNode);
-        app.ports.openURL.subscribe(function(targetURL) {
-            window.location = targetURL;
-        });
+        Elm.Main.init(document.getElementById('main'));
     </script>
 </body>

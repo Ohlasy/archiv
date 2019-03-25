@@ -1,13 +1,15 @@
-module State exposing (DisplayState, Model(..), Msg(..), downloadArticles, init, update)
+module State exposing (DisplayState, Model(..), Msg(..), init, update)
 
 import Article exposing (..)
-import Dict exposing (Dict)
+import Browser
+import Browser.Navigation as Nav
+import Dict
 import Filter exposing (..)
-import Http exposing (decodeUri, encodeUri, send)
+import Http
 import Json.Decode exposing (decodeString)
-import Location exposing (openURL)
-import Navigation exposing (modifyUrl)
-import URLParsing exposing (..)
+import URLParsing exposing (decodeHashStringOrEmpty, encodeHashString)
+import Url
+import Url.Builder
 
 
 
@@ -23,8 +25,8 @@ type alias DisplayState =
 
 
 type Model
-    = Loading FilterSettings
-    | Displaying DisplayState
+    = Loading Nav.Key FilterSettings
+    | Displaying Nav.Key DisplayState
     | Failed String
 
 
@@ -33,7 +35,8 @@ type Msg
     | UpdateFilterValue Filter (Maybe String)
     | UpdateSearchQuery String
     | SubmitSearch
-    | URLChange Navigation.Location
+    | UrlChanged Url.Url
+    | LinkClicked Browser.UrlRequest
     | RemoveAllFilters
 
 
@@ -44,56 +47,64 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( model, msg ) of
-        ( Loading settings, ParseArticles result ) ->
+        -- TODO: Improve error handling
+        ( Loading key settings, ParseArticles result ) ->
             case result of
                 Ok s ->
                     case decodeString articleListDecoder s of
                         Ok articles ->
-                            ( Displaying (DisplayState articles defaultFilters settings ""), Cmd.none )
+                            ( Displaying key (DisplayState articles defaultFilters settings ""), Cmd.none )
 
                         Err e ->
-                            ( Failed (toString e), Cmd.none )
+                            ( Failed "Decoding error", Cmd.none )
 
                 Err e ->
-                    ( Failed (toString e), Cmd.none )
+                    ( Failed "HTTP Error", Cmd.none )
 
-        ( Displaying state, UpdateFilterValue f val ) ->
+        ( Displaying key state, UpdateFilterValue f val ) ->
             let
                 newSettings =
                     case val of
-                        Just val ->
-                            Dict.insert f.slug val state.settings
+                        Just nonEmpty ->
+                            Dict.insert f.slug nonEmpty state.settings
 
                         Nothing ->
                             Dict.remove f.slug state.settings
 
                 newHash =
-                    encodeHashString newSettings
+                    Url.Builder.custom Url.Builder.Relative [] [] (Just (encodeHashString newSettings))
             in
-            ( model, modifyUrl newHash )
+            ( model, Nav.replaceUrl key newHash )
 
-        ( Displaying state, RemoveAllFilters ) ->
-            ( model, modifyUrl "#" )
+        ( Displaying key state, RemoveAllFilters ) ->
+            ( model, Nav.replaceUrl key "#" )
 
-        ( Displaying state, UpdateSearchQuery newQuery ) ->
-            ( Displaying { state | searchQuery = newQuery }, Cmd.none )
+        ( Displaying key state, UpdateSearchQuery newQuery ) ->
+            ( Displaying key { state | searchQuery = newQuery }, Cmd.none )
 
-        ( Displaying state, SubmitSearch ) ->
+        ( Displaying key state, SubmitSearch ) ->
             let
                 query =
                     state.searchQuery ++ " site:ohlasy.info"
 
                 targetURL =
-                    "http://www.google.cz/search?q=" ++ encodeUri query ++ "&sa=Hledej"
+                    Url.Builder.crossOrigin
+                        "http://www.google.cz/"
+                        [ "search" ]
+                        [ Url.Builder.string "q" query, Url.Builder.string "sa" "Hledej" ]
             in
-            ( model, openURL targetURL )
+            ( model, Nav.load targetURL )
 
-        ( Displaying state, URLChange location ) ->
+        ( Displaying key state, UrlChanged location ) ->
             let
                 newSettings =
-                    decodeHashStringOrEmpty location.hash
+                    Maybe.withDefault Dict.empty
+                        (Maybe.map decodeHashStringOrEmpty location.fragment)
             in
-            ( Displaying { state | settings = newSettings }, Cmd.none )
+            ( Displaying key { state | settings = newSettings }, Cmd.none )
+
+        ( state, LinkClicked (Browser.External href) ) ->
+            ( state, Nav.load href )
 
         _ ->
             ( Failed "Invalid state", Cmd.none )
@@ -108,10 +119,14 @@ downloadArticles =
 -- INIT
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init _ url key =
     let
         initialSettings =
-            decodeHashStringOrEmpty location.hash
+            Maybe.withDefault Dict.empty
+                (Maybe.map
+                    decodeHashStringOrEmpty
+                    url.fragment
+                )
     in
-    ( Loading initialSettings, Http.send ParseArticles downloadArticles )
+    ( Loading key initialSettings, Http.send ParseArticles downloadArticles )
