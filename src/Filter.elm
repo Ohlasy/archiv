@@ -1,4 +1,4 @@
-module Filter exposing (Filter, FilterSettings, defaultFilters, filterArticles, serialDecorator)
+module Filter exposing (Filter, FilterSettings, defaultFilters, filterArticles)
 
 import Article exposing (Article)
 import Dict exposing (Dict)
@@ -38,10 +38,14 @@ filterArticles articles f env =
 
 defaultFilters : List Filter
 defaultFilters =
+    let
+        pubYear =
+            .pubDate >> Time.toYear Time.utc >> String.fromInt
+    in
     [ Filter "Autor" "autor" (Just << .author) identity
     , Filter "Rubrika" "rubrika" .category identity
     , Filter "Seriál" "serial" .serialID serialDecorator
-    , Filter "Rok" "rok" (Just << String.fromInt << Time.toYear Time.utc << .pubDate) identity
+    , Filter "Rok" "rok" (Just << pubYear) identity
     ]
 
 
