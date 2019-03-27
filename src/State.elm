@@ -7,7 +7,6 @@ import Dict
 import Filter exposing (..)
 import Http
 import Json.Decode exposing (decodeString)
-import URLParsing exposing (decodeHashStringOrEmpty, encodeHashString)
 import Url
 import Url.Builder
 
@@ -72,7 +71,7 @@ update msg model =
                             Dict.remove f.slug state.settings
 
                 newHash =
-                    Url.Builder.custom Url.Builder.Relative [] [] (Just (encodeHashString newSettings))
+                    Url.Builder.custom Url.Builder.Relative [] [] (Just (toString newSettings))
             in
             ( model, Nav.replaceUrl key newHash )
 
@@ -85,11 +84,10 @@ update msg model =
         ( Displaying key state, SubmitSearch ) ->
             ( model, Nav.load (buildSearchUrl state.searchQuery) )
 
-        ( Displaying key state, UrlChanged location ) ->
+        ( Displaying key state, UrlChanged url ) ->
             let
                 newSettings =
-                    Maybe.withDefault Dict.empty
-                        (Maybe.map decodeHashStringOrEmpty location.fragment)
+                    decodeFilterSettings url
             in
             ( Displaying key { state | settings = newSettings }, Cmd.none )
 
@@ -119,6 +117,16 @@ downloadArticles =
     Http.getString "http://www.ohlasy.info/api/articles.js"
 
 
+decodeFilterSettings : Url.Url -> FilterSettings
+decodeFilterSettings url =
+    case url.fragment of
+        Just fragment ->
+            fromString fragment
+
+        Nothing ->
+            Dict.empty
+
+
 
 -- INIT
 
@@ -127,10 +135,6 @@ init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     let
         initialSettings =
-            Maybe.withDefault Dict.empty
-                (Maybe.map
-                    decodeHashStringOrEmpty
-                    url.fragment
-                )
+            decodeFilterSettings url
     in
     ( Loading key initialSettings, Http.send ParseArticles downloadArticles )
