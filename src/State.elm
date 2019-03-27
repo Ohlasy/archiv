@@ -83,17 +83,7 @@ update msg model =
             ( Displaying key { state | searchQuery = newQuery }, Cmd.none )
 
         ( Displaying key state, SubmitSearch ) ->
-            let
-                query =
-                    state.searchQuery ++ " site:ohlasy.info"
-
-                targetURL =
-                    Url.Builder.crossOrigin
-                        "http://www.google.cz/"
-                        [ "search" ]
-                        [ Url.Builder.string "q" query, Url.Builder.string "sa" "Hledej" ]
-            in
-            ( model, Nav.load targetURL )
+            ( model, Nav.load (buildSearchUrl state.searchQuery) )
 
         ( Displaying key state, UrlChanged location ) ->
             let
@@ -108,6 +98,20 @@ update msg model =
 
         _ ->
             ( Failed "Invalid state", Cmd.none )
+
+
+buildSearchUrl : String -> String
+buildSearchUrl query =
+    let
+        domainConstrainedQuery =
+            query ++ " site:ohlasy.info"
+    in
+    Url.Builder.crossOrigin
+        "http://www.google.cz/"
+        [ "search" ]
+        [ Url.Builder.string "q" domainConstrainedQuery
+        , Url.Builder.string "sa" "Hledej"
+        ]
 
 
 downloadArticles : Http.Request String
