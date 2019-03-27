@@ -71,25 +71,6 @@ renderResultStats filtered all =
         ]
 
 
-httpErrorToString : Http.Error -> String
-httpErrorToString e =
-    case e of
-        Http.BadUrl _ ->
-            "Foo"
-
-        Http.Timeout ->
-            "Timeout"
-
-        Http.NetworkError ->
-            "Foo"
-
-        Http.BadStatus _ ->
-            "Foo"
-
-        Http.BadPayload _ _ ->
-            "Bar"
-
-
 
 -- Sidebar
 
