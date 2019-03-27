@@ -7,7 +7,7 @@ cache:
         - elm-stuff
 install:
     - npm install
-    - npx elm package install --yes
+    - npx elm install --yes
 script:
     - make
     - make test
