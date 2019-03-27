@@ -18,23 +18,24 @@ type alias Filter =
     }
 
 
-filterArticles : List Article -> Filter -> FilterSettings -> List Article
-filterArticles articles f env =
-    case Dict.get f.slug env of
-        Just val ->
-            List.filter
-                (\a ->
-                    case f.selector a of
-                        Just x ->
-                            x == val
+filterArticles : Filter -> FilterSettings -> List Article -> List Article
+filterArticles filter env =
+    List.filter (matchArticle filter env)
 
-                        Nothing ->
-                            False
-                )
-                articles
+
+matchArticle : Filter -> FilterSettings -> Article -> Bool
+matchArticle filter env article =
+    case Dict.get filter.slug env of
+        Just val ->
+            case filter.selector article of
+                Just x ->
+                    x == val
+
+                Nothing ->
+                    False
 
         Nothing ->
-            articles
+            True
 
 
 defaultFilters : List Filter

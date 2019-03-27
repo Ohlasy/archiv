@@ -138,7 +138,7 @@ applyFilters : List Article -> List Filter -> FilterSettings -> List Article
 applyFilters articles filters env =
     case filters of
         fi :: xs ->
-            filterArticles (applyFilters articles xs env) fi env
+            filterArticles fi env (applyFilters articles xs env)
 
         [] ->
             articles
