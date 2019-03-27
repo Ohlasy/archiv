@@ -10,6 +10,7 @@ install:
     - npx elm package install --yes
 script:
     - make
+    - make test
 deploy:
     provider: s3
     access_key_id:
