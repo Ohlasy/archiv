@@ -15,6 +15,7 @@ type alias Article =
     , coverPhotoURL : Maybe String
     , serialID : Maybe String
     , pubDate : Time.Posix
+    , tags : List String
     }
 
 
@@ -29,6 +30,7 @@ articleDecoder =
         |> required "cover-photo" (nullable string)
         |> required "serial" (nullable string)
         |> required "pubDate" pubDateDecoder
+        |> required "tags" (list string)
 
 
 articleListDecoder : Decoder (List Article)
