@@ -2,6 +2,7 @@ module Filter exposing (Filter, FilterSettings, defaultFilters, filterArticles, 
 
 import Article exposing (Article)
 import Dict exposing (Dict)
+import NaturalOrdering
 import Time
 import Url exposing (percentDecode, percentEncode)
 
@@ -13,8 +14,9 @@ type alias FilterSettings =
 type alias Filter =
     { name : String
     , slug : String
-    , selector : Article -> Maybe String
+    , selector : Article -> List String
     , valueDecorator : String -> String
+    , sort : String -> String -> Order
     }
 
 
@@ -27,12 +29,11 @@ matchArticle : Filter -> FilterSettings -> Article -> Bool
 matchArticle filter env article =
     case Dict.get filter.slug env of
         Just val ->
-            case filter.selector article of
-                Just x ->
-                    x == val
-
-                Nothing ->
-                    False
+            let
+                presentValues =
+                    filter.selector article
+            in
+            List.any ((==) val) presentValues
 
         Nothing ->
             True
@@ -44,11 +45,27 @@ defaultFilters =
         pubYear =
             .pubDate >> Time.toYear Time.utc >> String.fromInt
     in
-    [ Filter "Autor" "autor" (Just << .author) identity
-    , Filter "Rubrika" "rubrika" .category identity
-    , Filter "Seriál" "serial" .serialID serialDecorator
-    , Filter "Rok" "rok" (Just << pubYear) identity
+    [ Filter "Autor" "autor" (List.singleton << .author) identity noSort
+    , Filter "Rubrika" "rubrika" (maybeToList << .category) identity noSort
+    , Filter "Seriál" "serial" (maybeToList << .serialID) serialDecorator noSort
+    , Filter "Téma" "tag" .tags identity NaturalOrdering.compare
+    , Filter "Rok" "rok" (List.singleton << pubYear) identity noSort
     ]
+
+
+maybeToList : Maybe a -> List a
+maybeToList x =
+    case x of
+        Just val ->
+            [ val ]
+
+        Nothing ->
+            []
+
+
+noSort : String -> String -> Order
+noSort _ _ =
+    GT
 
 
 serialDecorator : String -> String

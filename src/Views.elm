@@ -104,7 +104,10 @@ renderFilter articles settings f =
             Dict.get f.slug settings
 
         possibleValues =
-            unique (List.filterMap f.selector articles)
+            articles
+                |> List.concatMap f.selector
+                |> unique
+                |> List.sortWith f.sort
 
         valueOptions =
             List.map (\x -> option [ value x, selected (currentValue == Just x) ] [ text (f.valueDecorator x) ]) possibleValues
