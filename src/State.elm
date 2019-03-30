@@ -46,7 +46,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( model, msg ) of
-        -- TODO: Improve error handling
         ( Loading key settings, ParseArticles result ) ->
             case result of
                 Ok s ->
@@ -55,7 +54,7 @@ update msg model =
                             ( Displaying key (DisplayState articles defaultFilters settings ""), Cmd.none )
 
                         Err e ->
-                            ( Failed "Decoding error", Cmd.none )
+                            ( Failed (Json.Decode.errorToString e), Cmd.none )
 
                 Err e ->
                     ( Failed "HTTP Error", Cmd.none )
