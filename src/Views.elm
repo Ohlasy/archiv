@@ -17,7 +17,11 @@ rootView : Model -> Browser.Document Msg
 rootView model =
     case model of
         Loading _ _ ->
-            buildPage <| div [ class "status" ] [ text "Načítám…" ]
+            { title = "Načítám…"
+            , body =
+                [ img [ src "spinner.gif", class "spinner" ] []
+                ]
+            }
 
         Failed e ->
             buildPage <| div [ class "status" ] [ text ("Chyba: " ++ e) ]
