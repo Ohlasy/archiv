@@ -99,7 +99,7 @@ buildSearchUrl query =
             query ++ " site:ohlasy.info"
     in
     Url.Builder.crossOrigin
-        "http://www.google.cz/"
+        "https://www.google.cz/"
         [ "search" ]
         [ Url.Builder.string "q" domainConstrainedQuery
         , Url.Builder.string "sa" "Hledej"
@@ -108,7 +108,7 @@ buildSearchUrl query =
 
 downloadArticles : Http.Request String
 downloadArticles =
-    Http.getString "http://www.ohlasy.info/api/articles.js"
+    Http.getString "https://www.ohlasy.info/api/articles.js"
 
 
 decodeFilterSettings : Url -> FilterSettings
