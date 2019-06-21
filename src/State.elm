@@ -106,9 +106,12 @@ buildSearchUrl query =
         ]
 
 
-downloadArticles : Http.Request String
+downloadArticles : Cmd Msg
 downloadArticles =
-    Http.getString "https://www.ohlasy.info/api/articles.js"
+    Http.get
+        { url = "https://www.ohlasy.info/api/articles.js"
+        , expect = Http.expectString ParseArticles
+        }
 
 
 decodeFilterSettings : Url -> FilterSettings
@@ -141,4 +144,4 @@ init _ url key =
         initialSettings =
             decodeFilterSettings url
     in
-    ( Loading key initialSettings, Http.send ParseArticles downloadArticles )
+    ( Loading key initialSettings, downloadArticles )
