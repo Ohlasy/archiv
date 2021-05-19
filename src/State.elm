@@ -109,7 +109,7 @@ buildSearchUrl query =
 downloadArticles : Cmd Msg
 downloadArticles =
     Http.get
-        { url = "https://www.ohlasy.info/api/articles.js"
+        { url = "https://www.ohlasy.info/static-api/articles.js"
         , expect = Http.expectString ParseArticles
         }
 
