@@ -42,7 +42,7 @@ const Results: React.FC<Props> = ({ articles }) => {
 
 const ArticleBox: React.FC<Article> = (article) => {
   const fmtDate = (d: string) =>
-    new Date(d).toLocaleDateString("cs-CZ", { dateStyle: "short" });
+    new Date(d).toLocaleDateString("cs-CZ", { dateStyle: "medium" });
   return (
     <a href={"https://ohlasy.info" + article.relativeURL}>
       <div className="article-wrapper">
