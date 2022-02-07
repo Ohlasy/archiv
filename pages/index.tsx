@@ -44,7 +44,7 @@ const ArticleBox: React.FC<Article> = (article) => {
   const fmtDate = (d: string) =>
     new Date(d).toLocaleDateString("cs-CZ", { dateStyle: "short" });
   return (
-    <a href={article.relativeURL}>
+    <a href={"https://ohlasy.info" + article.relativeURL}>
       <div className="article-wrapper">
         <div className="article">
           <h2>{article.title}</h2>
