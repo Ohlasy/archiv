@@ -1,9 +1,12 @@
 import { NextPage, GetStaticProps } from "next";
 import { Article } from "src/article";
+import { FilterOptions, getFilterOptions } from "src/filters";
 import { loadAllArticles } from "src/site-data";
+import Filter from "src/Filter";
 
 interface Props {
   articles: readonly Article[];
+  filterOptions: FilterOptions;
 }
 
 const Home: NextPage<Props> = (props) => {
@@ -11,6 +14,7 @@ const Home: NextPage<Props> = (props) => {
     <div>
       <Header />
       <Stats {...props} />
+      <Sidebar {...props} />
       <Results {...props} />
     </div>
   );
@@ -28,6 +32,20 @@ const Header: React.FC = () => {
 
 const Stats: React.FC<Props> = ({ articles }) => {
   return <div className="status">nalezených článků: {articles.length}</div>;
+};
+
+const Sidebar: React.FC<Props> = ({ filterOptions: options }) => {
+  return (
+    <div className="sidebar">
+      <div className="filters">
+        <Filter label="Autor" values={options.authors} />
+        <Filter label="Rubrika" values={options.categories} />
+        <Filter label="Seriál" values={options.serials} />
+        <Filter label="Téma" values={options.topics} />
+        <Filter label="Rok" values={options.years} />
+      </div>
+    </div>
+  );
 };
 
 const Results: React.FC<Props> = ({ articles }) => {
@@ -62,8 +80,12 @@ const ArticleBox: React.FC<Article> = (article) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const articles = await loadAllArticles();
+  const filterOptions = getFilterOptions(articles);
   return {
-    props: { articles },
+    props: {
+      articles,
+      filterOptions,
+    },
   };
 };
 export default Home;
