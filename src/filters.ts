@@ -85,7 +85,7 @@ export function match(article: Article, settings: Settings): boolean {
 
 export function serializeSettings(settings: Settings): string {
   return Object.entries(settings)
-    .map(([key, val]) => `${key}=${val}`)
+    .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
     .join("&");
 }
 
@@ -94,6 +94,7 @@ export function deserializeSettings(hash: string): Settings {
     hash
       .replace("#", "")
       .split("&")
+      .filter((str) => !!str)
       .map((part) => part.split("=").map(decodeURIComponent))
   );
 }
