@@ -1,11 +1,17 @@
 import { NextPage, GetStaticProps } from "next";
 import { Article } from "src/article";
-import { FilterOptions, getFilterOptions, match } from "src/filters";
 import { loadAllArticles } from "src/site-data";
 import FilterSidebar from "src/FilterSidebar";
 import { useEffect, useState } from "react";
-
-type Settings = Record<string, string>;
+import { useRouter } from "next/router";
+import {
+  deserializeSettings,
+  FilterOptions,
+  getFilterOptions,
+  match,
+  serializeSettings,
+  Settings,
+} from "src/filters";
 
 interface Props {
   articles: Article[];
@@ -15,7 +21,10 @@ interface Props {
 const Home: NextPage<Props> = (props) => {
   const { articles, filterOptions } = props;
 
-  const [settings, setSettings] = useState<Settings>({});
+  const hash = typeof window !== "undefined" ? window.location.hash : "";
+  const initialSettings = deserializeSettings(hash);
+
+  const [settings, setSettings] = useState(initialSettings);
   const [matchingArticles, setMatchingArticles] = useState(articles);
 
   useEffect(() => {
@@ -23,17 +32,25 @@ const Home: NextPage<Props> = (props) => {
     setMatchingArticles(matches);
   }, [settings, articles]);
 
+  const router = useRouter();
+  const updateUrl = (settings: Settings) =>
+    router.replace("#" + serializeSettings(settings));
+
   const updateFilters = (id: string, newValue: string | undefined) => {
     if (newValue) {
-      setSettings({ ...settings, [id]: newValue });
+      const newSettings = { ...settings, [id]: newValue };
+      setSettings(newSettings);
+      updateUrl(newSettings);
     } else {
       const { [id]: _, ...newSettings } = settings;
       setSettings(newSettings);
+      updateUrl(newSettings);
     }
   };
 
   const removeAllFilters = () => {
     setSettings({});
+    updateUrl({});
   };
 
   return (

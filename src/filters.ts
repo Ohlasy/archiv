@@ -2,6 +2,7 @@ import { Article } from "./article";
 import { unique } from "./utils";
 
 export type FilterOptions = Record<string, string[]>;
+export type Settings = Record<string, string>;
 
 export interface Filter {
   id: string;
@@ -68,10 +69,7 @@ export function getFilterOptions(articles: Article[]): FilterOptions {
   return Object.fromEntries(filtersAndValues);
 }
 
-export function match(
-  article: Article,
-  settings: Record<string, string>
-): boolean {
+export function match(article: Article, settings: Settings): boolean {
   for (const [filterId, wantedValue] of Object.entries(settings)) {
     const filter = filters.find((f) => f.id === filterId);
     if (!filter) {
@@ -83,6 +81,21 @@ export function match(
     }
   }
   return true;
+}
+
+export function serializeSettings(settings: Settings): string {
+  return Object.entries(settings)
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
+}
+
+export function deserializeSettings(hash: string): Settings {
+  return Object.fromEntries(
+    hash
+      .replace("#", "")
+      .split("&")
+      .map((part) => part.split("=").map(decodeURIComponent))
+  );
 }
 
 const getYear = (a: Article) => new Date(a.pubDate).getFullYear().toString();
