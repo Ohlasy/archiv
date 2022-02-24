@@ -33,11 +33,20 @@ const Home: NextPage<Props> = (props) => {
     }
   };
 
+  const removeAllFilters = () => {
+    setSettings({});
+  };
+
   return (
     <div>
       <Header />
       <Stats articles={matchingArticles} />
-      <FilterSidebar options={filterOptions} onChange={updateFilters} />
+      <FilterSidebar
+        options={filterOptions}
+        settings={settings}
+        onChange={updateFilters}
+        removeAllFilters={removeAllFilters}
+      />
       <Results articles={matchingArticles} />
     </div>
   );
@@ -60,8 +69,8 @@ const Stats: React.FC<{ articles: Article[] }> = ({ articles }) => {
 const Results: React.FC<{ articles: Article[] }> = ({ articles }) => {
   return (
     <div className="articles">
-      {articles.map((article, index) => (
-        <ArticleBox key={index} {...article} />
+      {articles.map((article) => (
+        <ArticleBox key={article.relativeURL} {...article} />
       ))}
     </div>
   );
