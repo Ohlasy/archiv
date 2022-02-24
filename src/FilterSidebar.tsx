@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { FilterOptions, filters } from "./filters";
+import { Filter, FilterOptions, filters } from "./filters";
 
 interface Props {
   options: FilterOptions;
@@ -13,7 +13,7 @@ const FilterSidebar: React.FC<Props> = ({ options, onChange }) => {
         {filters.map((filter) => (
           <Filter
             key={filter.id}
-            label={filter.name}
+            filter={filter}
             values={options[filter.id]}
             onChange={(value) => onChange(filter.id, value)}
           />
@@ -24,26 +24,28 @@ const FilterSidebar: React.FC<Props> = ({ options, onChange }) => {
 };
 
 interface FilterProps {
-  label: string;
+  filter: Filter;
   values: string[];
   onChange: (value: string | undefined) => void;
 }
 
-const Filter: React.FC<FilterProps> = ({ label, values, onChange }) => {
+const Filter: React.FC<FilterProps> = ({ filter, values, onChange }) => {
   const emptyLabel = "bez omezení";
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     const reportedValue = value === emptyLabel ? undefined : value;
     onChange(reportedValue);
   };
+  const identity = (a: string) => a;
+  const dressValue = filter.displayValue || identity;
   return (
     <div className="filter">
-      <div className="filterLabel">{label}</div>
+      <div className="filterLabel">{filter.name}</div>
       <select onChange={handleChange}>
         <option key="na">{emptyLabel}</option>
         {values.map((item, index) => (
           <option key={index} value={item}>
-            {item}
+            {dressValue(item)}
           </option>
         ))}
       </select>

@@ -8,6 +8,7 @@ export interface Filter {
   name: string;
   extractPossibleValues: (article: Article) => string[];
   match: (article: Article, value: string) => boolean;
+  displayValue?: (value: string) => string;
 }
 
 export const filters: Filter[] = [
@@ -28,6 +29,20 @@ export const filters: Filter[] = [
     name: "Seriál",
     extractPossibleValues: ({ serial }) => (serial ? [serial] : []),
     match: (article, value) => article.serial === value,
+    displayValue: (serialId: string) => {
+      const names: any = {
+        pribehy: "Každý má svůj příběh",
+        krajiny: "Krajiny Boskovicka",
+        ghetto: "Příběhy z ghetta",
+        prochazky: "Procházky po památkách",
+        jazyk: "Rendez-vous s jazykem",
+        depozitar: "Z muzejního depozitáře",
+        osmicky: "Osmičková výročí",
+        stromy: "Život pod stromy",
+        historie: "Pohledy do historie",
+      };
+      return names[serialId] || serialId;
+    },
   },
   {
     id: "tag",

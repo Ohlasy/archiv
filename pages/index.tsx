@@ -14,6 +14,7 @@ interface Props {
 
 const Home: NextPage<Props> = (props) => {
   const { articles, filterOptions } = props;
+
   const [settings, setSettings] = useState<Settings>({});
   const [matchingArticles, setMatchingArticles] = useState(articles);
 
@@ -30,7 +31,6 @@ const Home: NextPage<Props> = (props) => {
       delete newSettings[id];
       setSettings(newSettings);
     }
-    console.log(settings);
   };
 
   return (
