@@ -56,7 +56,9 @@ const Home: NextPage<Props> = (props) => {
   return (
     <div>
       <Header />
-      <Stats articles={matchingArticles} />
+      <div className="status">
+        nalezených článků: {matchingArticles.length}/{articles.length}
+      </div>
       <FilterSidebar
         options={filterOptions}
         settings={settings}
@@ -76,10 +78,6 @@ const Header: React.FC = () => {
       </h1>
     </div>
   );
-};
-
-const Stats: React.FC<{ articles: Article[] }> = ({ articles }) => {
-  return <div className="status">nalezených článků: {articles.length}</div>;
 };
 
 const Results: React.FC<{ articles: Article[] }> = ({ articles }) => {
