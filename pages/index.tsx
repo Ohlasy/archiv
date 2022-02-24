@@ -27,8 +27,7 @@ const Home: NextPage<Props> = (props) => {
     if (newValue) {
       setSettings({ ...settings, [id]: newValue });
     } else {
-      const newSettings = settings;
-      delete newSettings[id];
+      const { [id]: _, ...newSettings } = settings;
       setSettings(newSettings);
     }
   };
