@@ -1,21 +1,44 @@
 import { NextPage, GetStaticProps } from "next";
 import { Article } from "src/article";
-import { FilterOptions, getFilterOptions } from "src/filters";
+import { FilterOptions, getFilterOptions, match } from "src/filters";
 import { loadAllArticles } from "src/site-data";
-import Filter from "src/Filter";
+import FilterSidebar from "src/FilterSidebar";
+import { useEffect, useState } from "react";
+
+type Settings = Record<string, string>;
 
 interface Props {
-  articles: readonly Article[];
+  articles: Article[];
   filterOptions: FilterOptions;
 }
 
 const Home: NextPage<Props> = (props) => {
+  const { articles, filterOptions } = props;
+  const [settings, setSettings] = useState<Settings>({});
+  const [matchingArticles, setMatchingArticles] = useState(articles);
+
+  useEffect(() => {
+    const matches = articles.filter((a) => match(a, settings));
+    setMatchingArticles(matches);
+  }, [settings, articles]);
+
+  const updateFilters = (id: string, newValue: string | undefined) => {
+    if (newValue) {
+      setSettings({ ...settings, [id]: newValue });
+    } else {
+      const newSettings = settings;
+      delete newSettings[id];
+      setSettings(newSettings);
+    }
+    console.log(settings);
+  };
+
   return (
     <div>
       <Header />
-      <Stats {...props} />
-      <Sidebar {...props} />
-      <Results {...props} />
+      <Stats articles={matchingArticles} />
+      <FilterSidebar options={filterOptions} onChange={updateFilters} />
+      <Results articles={matchingArticles} />
     </div>
   );
 };
@@ -30,25 +53,11 @@ const Header: React.FC = () => {
   );
 };
 
-const Stats: React.FC<Props> = ({ articles }) => {
+const Stats: React.FC<{ articles: Article[] }> = ({ articles }) => {
   return <div className="status">nalezených článků: {articles.length}</div>;
 };
 
-const Sidebar: React.FC<Props> = ({ filterOptions: options }) => {
-  return (
-    <div className="sidebar">
-      <div className="filters">
-        <Filter label="Autor" values={options.authors} />
-        <Filter label="Rubrika" values={options.categories} />
-        <Filter label="Seriál" values={options.serials} />
-        <Filter label="Téma" values={options.topics} />
-        <Filter label="Rok" values={options.years} />
-      </div>
-    </div>
-  );
-};
-
-const Results: React.FC<Props> = ({ articles }) => {
+const Results: React.FC<{ articles: Article[] }> = ({ articles }) => {
   return (
     <div className="articles">
       {articles.map((article, index) => (

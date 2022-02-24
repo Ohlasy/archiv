@@ -1,26 +1,73 @@
 import { Article } from "./article";
-import { filterMap, unique } from "./utils";
+import { unique } from "./utils";
 
-export interface Filters {
-  author?: string;
+export type FilterOptions = Record<string, string[]>;
+
+export interface Filter {
+  id: string;
+  name: string;
+  extractPossibleValues: (article: Article) => string[];
+  match: (article: Article, value: string) => boolean;
 }
 
-export interface FilterOptions {
-  authors: string[];
-  categories: string[];
-  serials: string[];
-  topics: string[];
-  years: string[];
-}
+export const filters: Filter[] = [
+  {
+    id: "autor",
+    name: "Autor",
+    extractPossibleValues: (article) => [article.author],
+    match: (article, value) => article.author === value,
+  },
+  {
+    id: "rubrika",
+    name: "Rubrika",
+    extractPossibleValues: ({ category }) => (category ? [category] : []),
+    match: (article, value) => article.category === value,
+  },
+  {
+    id: "serial",
+    name: "Seriál",
+    extractPossibleValues: ({ serial }) => (serial ? [serial] : []),
+    match: (article, value) => article.serial === value,
+  },
+  {
+    id: "tag",
+    name: "Téma",
+    extractPossibleValues: ({ tags }) => tags,
+    match: (article, value) => article.tags.includes(value),
+  },
+  {
+    id: "rok",
+    name: "Rok",
+    extractPossibleValues: (article) => [getYear(article)],
+    match: (article, value) => getYear(article) === value,
+  },
+];
 
 export function getFilterOptions(articles: Article[]): FilterOptions {
-  return {
-    authors: unique(articles.map((a) => a.author)),
-    categories: unique(filterMap(articles, (a) => a.category)),
-    serials: unique(filterMap(articles, (a) => a.serial)),
-    topics: unique(articles.flatMap((a) => a.tags)),
-    years: unique(articles.map(getYear)),
-  };
+  const getPossibleValues = (f: Filter) =>
+    unique(articles.map(f.extractPossibleValues).flat());
+  const filtersAndValues = filters.map((filter) => [
+    filter.id,
+    getPossibleValues(filter),
+  ]);
+  return Object.fromEntries(filtersAndValues);
+}
+
+export function match(
+  article: Article,
+  settings: Record<string, string>
+): boolean {
+  for (const [filterId, wantedValue] of Object.entries(settings)) {
+    const filter = filters.find((f) => f.id === filterId);
+    if (!filter) {
+      console.warn(`Unknown filter id “${filterId}” in settings, skipping.`);
+      continue;
+    }
+    if (!filter.match(article, wantedValue)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 const getYear = (a: Article) => new Date(a.pubDate).getFullYear().toString();
