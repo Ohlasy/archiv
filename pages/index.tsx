@@ -12,6 +12,7 @@ import {
   serializeSettings,
   Settings,
 } from "src/filters";
+import { buildSearchUrl } from "src/utils";
 
 interface Props {
   articles: Article[];
@@ -53,6 +54,10 @@ const Home: NextPage<Props> = (props) => {
     updateUrl({});
   };
 
+  const triggerSearch = (query: string) => {
+    router.push(buildSearchUrl(query));
+  };
+
   return (
     <div>
       <Header />
@@ -63,6 +68,7 @@ const Home: NextPage<Props> = (props) => {
         options={filterOptions}
         settings={settings}
         onChange={updateFilters}
+        onSearch={triggerSearch}
         removeAllFilters={removeAllFilters}
       />
       <Results articles={matchingArticles} />

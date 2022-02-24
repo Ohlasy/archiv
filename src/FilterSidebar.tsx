@@ -1,21 +1,19 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { Filter, FilterOptions, filters } from "./filters";
 
 interface Props {
   options: FilterOptions;
   settings: Record<string, string>;
   onChange: (id: string, value: string | undefined) => void;
+  onSearch: (query: string) => void;
   removeAllFilters: () => void;
 }
 
-const FilterSidebar: React.FC<Props> = ({
-  options,
-  settings,
-  onChange,
-  removeAllFilters,
-}) => {
+const FilterSidebar: React.FC<Props> = (props) => {
+  const { options, settings, onChange, onSearch, removeAllFilters } = props;
   return (
     <div className="sidebar">
+      <SearchBox onSubmit={onSearch} />
       <div className="filters">
         {filters.map((filter) => (
           <Filter
@@ -65,6 +63,30 @@ const Filter: React.FC<FilterProps> = (props) => {
           </option>
         ))}
       </select>
+    </div>
+  );
+};
+
+interface SearchProps {
+  onSubmit: (query: string) => void;
+}
+
+const SearchBox: React.FC<SearchProps> = ({ onSubmit }) => {
+  const [query, setQuery] = useState("");
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSubmit(query);
+  };
+  return (
+    <div className="search">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="hledat"
+          onChange={(event) => setQuery(event.target.value)}
+        />
+        <input type="submit" hidden={true} />
+      </form>
     </div>
   );
 };
