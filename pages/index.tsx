@@ -13,6 +13,7 @@ import {
   Settings,
 } from "src/filters";
 import { buildSearchUrl } from "src/utils";
+import Script from "next/script";
 
 interface Props {
   articles: Article[];
@@ -60,6 +61,10 @@ const Home: NextPage<Props> = (props) => {
 
   return (
     <div>
+      <Script
+        data-domain="archiv.ohlasy.info"
+        src="https://plausible.io/js/plausible.js"
+      />
       <Header />
       <div className="status">
         nalezených článků: {matchingArticles.length}/{articles.length}
