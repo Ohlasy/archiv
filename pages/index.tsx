@@ -10,6 +10,7 @@ import {
   serializeSettings,
   Settings,
 } from "src/filters";
+import Head from "next/head";
 
 interface Props {
   articles: Article[];
@@ -34,13 +35,19 @@ const Home: NextPage<Props> = (props) => {
   const triggerSearch = (query: string) => router.push(buildSearchUrl(query));
 
   return (
-    <MainPage
-      allArticles={articles}
-      filterOptions={filterOptions}
-      initialSettings={initialSettings}
-      onSettingsChange={updateUrl}
-      triggerSearch={triggerSearch}
-    />
+    <>
+      <Head>
+        <title>Archiv článků | Ohlasy</title>
+        <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+      </Head>
+      <MainPage
+        allArticles={articles}
+        filterOptions={filterOptions}
+        initialSettings={initialSettings}
+        onSettingsChange={updateUrl}
+        triggerSearch={triggerSearch}
+      />
+    </>
   );
 };
 
