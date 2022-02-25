@@ -59,7 +59,7 @@ export const filters: Filter[] = [
   },
 ];
 
-export function getFilterOptions(articles: Article[]): FilterOptions {
+export function buildFilterOptions(articles: Article[]): FilterOptions {
   const getPossibleValues = (f: Filter) =>
     unique(articles.map(f.extractPossibleValues).flat());
   const filtersAndValues = filters.map((filter) => [

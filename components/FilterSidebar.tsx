@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Filter, FilterOptions, filters } from "./filters";
+import { Filter, FilterOptions, filters } from "src/filters";
 
 interface Props {
   options: FilterOptions;
