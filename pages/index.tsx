@@ -38,6 +38,14 @@ const Home: NextPage<Props> = (props) => {
     <>
       <Head>
         <title>Archiv článků | Ohlasy</title>
+        <meta
+          property="og:image"
+          content="https://i.ohlasy.info/i/0037315a.jpg"
+        />
+        <meta
+          property="og:description"
+          content="Archiv všech doposud vydaných článků. Filtrujte podle autora, rubriky nebo seriálu."
+        />
         <link rel="shortcut icon" type="image/png" href="/favicon.png" />
       </Head>
       <MainPage
