@@ -19,6 +19,11 @@ const MainPage: React.FC<Props> = (props) => {
   const [settings, setSettings] = useState(initialSettings);
   const [matchingArticles, setMatchingArticles] = useState(allArticles);
 
+  // Load fresh initial settings when props change
+  useEffect(() => {
+    setSettings(initialSettings);
+  }, [initialSettings]);
+
   // Filter articles when settings change
   useEffect(() => {
     const matches = allArticles.filter((a) => match(a, settings));
