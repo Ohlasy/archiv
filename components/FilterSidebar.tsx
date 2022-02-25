@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Filter, FilterOptions, filters } from "src/filters";
+import { Filter, FilterOptions, filters, Settings } from "src/filters";
 
 interface Props {
   options: FilterOptions;
-  settings: Record<string, string>;
+  settings: Settings;
   onChange: (id: string, value: string | undefined) => void;
   onSearch: (query: string) => void;
   removeAllFilters: () => void;
