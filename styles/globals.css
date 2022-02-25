@@ -86,6 +86,11 @@ input {
   text-transform: lowercase;
 }
 
+.filterLabel.active::after {
+  content: " ●";
+  color: rgb(81, 122, 255);
+}
+
 .filter select {
   width: 100%;
 }

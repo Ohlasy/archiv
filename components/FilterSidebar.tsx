@@ -52,9 +52,10 @@ const Filter: React.FC<FilterProps> = (props) => {
   };
   const identity = (a: string) => a;
   const dressValue = filter.displayValue || identity;
+  const className = selected ? "filterLabel active" : "filterLabel";
   return (
     <div className="filter">
-      <div className="filterLabel">{filter.name}</div>
+      <div className={className}>{filter.name}</div>
       <select onChange={handleChange} value={selected ?? emptyLabel}>
         <option key="na">{emptyLabel}</option>
         {values.map((item, index) => (
