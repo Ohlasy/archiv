@@ -57,6 +57,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   const articles = await loadAllArticles();
   return {
     props: { articles },
+    revalidate: 60 * 60, // update each hour
   };
 };
 export default Home;
