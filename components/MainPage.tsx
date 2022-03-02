@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Article } from "src/article";
 import { FilterOptions, match, Settings } from "src/filters";
 import { useEffect, useState } from "react";
+import GrowBox from "./GrowBox";
 
 export interface Props {
   allArticles: Article[];
@@ -81,11 +82,12 @@ const Header: React.FC = () => {
 };
 
 const Results: React.FC<{ articles: Article[] }> = ({ articles }) => {
+  const renderArticle = (article: Article) => (
+    <ArticleBox key={article.relativeURL} {...article} />
+  );
   return (
     <div className="articles">
-      {articles.map((article) => (
-        <ArticleBox key={article.relativeURL} {...article} />
-      ))}
+      <GrowBox items={articles} renderItem={renderArticle} batchSize={50} />
     </div>
   );
 };
