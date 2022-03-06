@@ -55,7 +55,7 @@ const MainPage: React.FC<Props> = (props) => {
         data-domain="archiv.ohlasy.info"
         src="https://plausible.io/js/plausible.js"
       />
-      <Header />
+      <Header onClick={removeAllFilters} />
       <div className="status">
         nalezených článků: {matchingArticles.length}/{allArticles.length}
       </div>
@@ -71,10 +71,10 @@ const MainPage: React.FC<Props> = (props) => {
   );
 };
 
-const Header: React.FC = () => {
+const Header: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
     <div className="header">
-      <h1>
+      <h1 onClick={onClick}>
         Ohlasy <small>archiv článků</small>
       </h1>
     </div>
