@@ -95,10 +95,17 @@ const Results: React.FC<{ articles: Article[] }> = ({ articles }) => {
 const ArticleBox: React.FC<Article> = (article) => {
   const fmtDate = (d: string) =>
     new Date(d).toLocaleDateString("cs-CZ", { dateStyle: "medium" });
+  const coverUrl =
+    article.coverPhoto ||
+    "https://nahledy.ohlasy.info/?src=https://i.ohlasy.info/i/90c5f41a.jpg&width=500&proof=4819733376ba00e5f556f48f7ec1d0ea29c592d8";
   return (
     <a href={"https://ohlasy.info" + article.relativeURL}>
       <div className="article-wrapper">
         <div className="article">
+          <div className="cover-photo">
+            {/* eslint-disable-next-line */}
+            <img src={coverUrl} alt="" />
+          </div>
           <h2>{article.title}</h2>
           <div className="metadata">
             <span className="author">{article.author}</span>
