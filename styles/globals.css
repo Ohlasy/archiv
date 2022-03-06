@@ -128,7 +128,7 @@ input {
 }
 
 .article {
-  border-top: 1px solid gray;
+  border-top: 1px solid #ddd;
   margin-right: 30px;
   font-family: "PT Serif", serif;
   color: #333;
