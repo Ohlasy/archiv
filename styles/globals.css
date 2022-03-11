@@ -138,6 +138,7 @@ input {
 .cover-photo {
   aspect-ratio: 16/9;
   overflow: hidden;
+  background-color: #ddd;
 }
 
 .cover-photo img {
