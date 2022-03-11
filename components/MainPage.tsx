@@ -56,9 +56,6 @@ const MainPage: React.FC<Props> = (props) => {
         src="https://plausible.io/js/plausible.js"
       />
       <Header onClick={removeAllFilters} />
-      <div className="status">
-        nalezených článků: {matchingArticles.length}/{allArticles.length}
-      </div>
       <FilterSidebar
         options={filterOptions}
         settings={settings}
@@ -66,6 +63,9 @@ const MainPage: React.FC<Props> = (props) => {
         onSearch={triggerSearch}
         removeAllFilters={removeAllFilters}
       />
+      <div className="status">
+        nalezených článků: {matchingArticles.length}/{allArticles.length}
+      </div>
       <Results articles={matchingArticles} />
     </div>
   );
