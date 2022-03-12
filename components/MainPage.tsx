@@ -3,7 +3,10 @@ import Script from "next/script";
 import { Article } from "src/article";
 import { FilterOptions, match, Settings } from "src/filters";
 import { useEffect, useState } from "react";
+import Plausible from "plausible-tracker";
 import GrowBox from "./GrowBox";
+
+const { trackEvent } = Plausible();
 
 export interface Props {
   allArticles: Article[];
@@ -37,6 +40,7 @@ const MainPage: React.FC<Props> = (props) => {
       const newSettings = { ...settings, [id]: newValue };
       setSettings(newSettings);
       onSettingsChange(newSettings);
+      trackEvent(`filter:${id}:${newValue}`);
     } else {
       const { [id]: _, ...newSettings } = settings;
       setSettings(newSettings);
