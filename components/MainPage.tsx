@@ -40,7 +40,7 @@ const MainPage: React.FC<Props> = (props) => {
       const newSettings = { ...settings, [id]: newValue };
       setSettings(newSettings);
       onSettingsChange(newSettings);
-      trackEvent(`filter`, { props: { id, value: newValue } });
+      trackEvent(`Filter`, { props: { value: `${id}:${newValue}` } });
     } else {
       const { [id]: _, ...newSettings } = settings;
       setSettings(newSettings);
