@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Plausible from "plausible-tracker";
 import GrowBox from "./GrowBox";
 
-const { trackEvent } = Plausible();
+const { trackEvent } = Plausible({ domain: "archiv.ohlasy.info" });
 
 export interface Props {
   allArticles: Article[];
