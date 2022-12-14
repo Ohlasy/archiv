@@ -108,13 +108,13 @@ const ArticleBox: React.FC<Article> = (article) => {
         <div className="article">
           <div className="cover-photo">
             {/* eslint-disable-next-line */}
-            <img src={coverUrl} alt="" />
+            <img src={`https://ohlasy.info${coverUrl}`} alt="" />
           </div>
           <h2>{article.title}</h2>
           <div className="metadata">
             <span className="author">{article.author}</span>
             {" / "}
-            <span className="pubDate">{fmtDate(article.pubDate)}</span>
+            <span className="pubDate">{fmtDate(article.date)}</span>
           </div>
           <p className="perex">{article.perex}</p>
         </div>

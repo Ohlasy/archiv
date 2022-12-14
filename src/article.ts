@@ -2,9 +2,8 @@ import {
   array,
   decodeType,
   field,
-  nullable,
   number,
-  Pojo,
+  optional,
   record,
   string,
 } from "typescript-json-decoder";
@@ -14,16 +13,12 @@ export type Article = decodeType<typeof decodeArticle>;
 export const decodeArticle = record({
   title: string,
   author: string,
-  category: nullable(string),
-  pubDate: date,
-  coverPhoto: field("cover-photo", nullable(string)),
+  category: optional(string),
+  date: string,
+  coverPhoto: field("cover-photo", optional(string)),
   perex: string,
-  serial: nullable(string),
+  serial: optional(string),
   relativeURL: string,
   tags: array(string),
   numberOfWords: number,
 });
-
-function date(value: Pojo): string {
-  return string(value).replace(" +0000", "Z").replace(" ", "T");
-}
