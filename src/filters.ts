@@ -94,4 +94,4 @@ export function match(article: Article, settings: Settings): boolean {
   return true;
 }
 
-const getYear = (a: Article) => new Date(a.pubDate).getFullYear().toString();
+const getYear = (a: Article) => new Date(a.date).getFullYear().toString();
