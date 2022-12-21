@@ -108,7 +108,7 @@ const ArticleBox: React.FC<Article> = (article) => {
         <div className="article">
           <div className="cover-photo">
             {/* eslint-disable-next-line */}
-            <img src={`https://ohlasy.info${coverUrl}`} alt="" />
+            <img src={coverUrl} alt="" />
           </div>
           <h2>{article.title}</h2>
           <div className="metadata">
