@@ -1,5 +1,9 @@
 {
-    "github": {
-        "silent": true
+  "redirects": [
+    {
+      "source": "/:path",
+      "destination": "https://ohlasy.info/clanky/:path",
+      "statusCode": 301
     }
+  ]
 }
