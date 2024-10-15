@@ -1,8 +1,8 @@
 {
   "redirects": [
     {
-      "source": "/:path",
-      "destination": "https://ohlasy.info/clanky/:path",
+      "source": "/",
+      "destination": "https://ohlasy.info/clanky/",
       "statusCode": 301
     }
   ]
