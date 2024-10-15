@@ -4,6 +4,11 @@
       "source": "/",
       "destination": "https://ohlasy.info/clanky/",
       "statusCode": 301
+    },
+    {
+      "source": "/:path",
+      "destination": "https://ohlasy.info/clanky/:path",
+      "statusCode": 301
     }
   ]
 }
